@@ -6,8 +6,8 @@ const dispatch = createEventDispatcher();
 
 export let durationFilter = 0;
 
-
 </script>
+
 Duration:
 <input type="range" min="0" max="1200"
   bind:value={durationFilter}

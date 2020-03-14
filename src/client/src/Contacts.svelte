@@ -1,5 +1,5 @@
 <script>
-import { ENCOUNTER_TO, ENCOUNTER_FROM, ENCOUNTER_ID, PHONE_NUMBER } from './CONFIG.json';
+import { ENCOUNTER_TO, ENCOUNTER_FROM, ENCOUNTER_ID, PHONE_NUMBER } from '../CONFIG.json';
 
 import DurationFilter from './components/DurationFilter.svelte';
 

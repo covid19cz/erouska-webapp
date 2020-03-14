@@ -1,6 +1,6 @@
 import { writable, derived } from 'svelte/store';
 
-import { ENCOUNTER_ID, SERVER, GET_PHONE_NUMBERS, PHONE_NUMBER } from './CONFIG.json';
+import { ENCOUNTER_ID, SERVER, GET_PHONE_NUMBERS, PHONE_NUMBER } from '../CONFIG.json';
 
 
 export const contacts = writable(null);
@@ -13,7 +13,14 @@ export const phones = derived(contacts, async (contacts, set) => {
   const ids = contacts.map(c => c[ENCOUNTER_ID]);
 
   // fetch phone numbers from the server
-	return fetch(SERVER + GET_PHONE_NUMBERS)
+	return fetch(SERVER + GET_PHONE_NUMBERS, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(ids)
+  })
     .then(response => response.json())
     .then(phones => {
       set(contacts.map(c => {
