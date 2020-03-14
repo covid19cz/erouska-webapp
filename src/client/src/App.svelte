@@ -24,12 +24,27 @@ import Contacts from './Contacts.svelte';
 <style>
 
 header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: var(--ui-header-height);
   display: flex;
+  align-items: center;
   padding: .5rem;
-  background: #CCC;
+  background: var(--theme-background-dark);
 }
 header h1 {
   flex-grow: 2;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+main {
+  position: fixed;
+  left: 0;
+  top: var(--ui-header-height);
+  bottom: 0;
+  right: 0;
 }
 
 </style>

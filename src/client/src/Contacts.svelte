@@ -1,38 +1,57 @@
 <script>
-import { ENCOUNTER_TO, ENCOUNTER_FROM, ENCOUNTER_ID, PHONE_NUMBER } from '../CONFIG.json';
+import {
+  ENCOUNTER_TO,
+  ENCOUNTER_FROM,
+  ENCOUNTER_ID,
+  DURATION,
+  PHONE_NUMBER
+} from '../CONFIG.json';
+
+import { scaleLinear } from 'd3';
 
 import DurationFilter from './components/DurationFilter.svelte';
+import Duration from './components/Duration.svelte';
 
 
 export let data = [];
 
 let durationFilter = 0;
 let focusContact = null;
+let durationScale = null;
 
 $: d = applyFilter(data, durationFilter);
 
 function applyFilter(data, durationFilter) {
   let filtered = data;
-  if (durationFilter > 0) {
-    filtered = data.filter(d => {
-      return (new Date(d[ENCOUNTER_TO])).valueOf() - (new Date(d[ENCOUNTER_FROM])).valueOf() > durationFilter*1000;
-    })
-  }
+  let min = 0;
+  let max = 0;
+
+  filtered = data.filter(d => {
+    min = Math.min(min, d[DURATION]);
+    max = Math.max(max, d[DURATION]);
+    return (durationFilter > 0) ? d[DURATION] > durationFilter*1000 : true;
+  });
+  console.log(min, max);
+  durationScale = scaleLinear()
+    .domain([min, max])
+    .range([0,100]);
 
   return filtered;
 }
 
 </script>
-<h3>Filters</h3>
-<div>
-  <DurationFilter durationFilter={durationFilter} on:change={e => durationFilter  = e.detail} />
-</div>
 
+<div class="filters">
+  <div>
+    <DurationFilter durationFilter={durationFilter} on:change={e => durationFilter  = e.detail} />
+  </div>
+</div>
+<div class="scroll">
 {#if d && d.length > 0}
   <table>
     <tr>
       {#each Object.keys(d[0]) as col}
-        <th>{col}</th>
+        <th>{col.replace(/_/g, ' ')}</th>
       {/each}
     </tr>
 
@@ -41,15 +60,24 @@ function applyFilter(data, durationFilter) {
         on:mouseover={() => focusContact = item[ENCOUNTER_ID] }
         class:active={item[ENCOUNTER_ID] == focusContact}>
         {#each Object.keys(item) as col}
-          <td>
+
             {#if col == PHONE_NUMBER}
-              <a href="tel:{item[col]}" class="button">{item[col]}</a>
+              <td class="actions">
+                <a href="tel:{item[col]}" class="button">{item[col]}</a>
+              </td>
+
+            {:else if col == DURATION}
+              <td class="duration">
+                <div class="duration-scale" style="width: {durationScale(item[DURATION])}%"></div>
+                <Duration duration={item[col]/1000} />
+              </td>
+
             {:else}
-              {item[col]}
+              <td>{item[col]}</td>
             {/if}
 
-          </td>
         {/each}
+
       </tr>
     {/each}
   </table>
@@ -58,9 +86,17 @@ function applyFilter(data, durationFilter) {
     No data.
   </div>
 {/if}
-
+</div>
 <style>
 
+  .scroll {
+    position: absolute;
+    left: 0;
+    top: 10rem;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+  }
   table {
     width: 100%;
   }
@@ -72,6 +108,7 @@ function applyFilter(data, durationFilter) {
 
   tr th {
     background: var(--tr-odd);
+    padding: .5rem;
   }
   tr:nth-child(even)  td {
     background: var(--tr-even);
@@ -83,7 +120,38 @@ function applyFilter(data, durationFilter) {
     background: var(--tr-active);
   }
 
-  .phone {
+  tr td.actions {
+    text-align: center;
+  }
+  tr td.duration {
+    position: relative;
+  }
+  tr td .duration-scale {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: var(--tr-scale);
+    z-index: -1;
+  }
 
+  .filters {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 10rem;
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem;
+  }
+  .filters > div {
+    max-width: 32%;
+    border: var(--box-border);
+    margin:  0 1% 1%;
+    padding: 1rem;
+    border-radius: var(--box-radius);
+    flex-grow: 1;
   }
 </style>

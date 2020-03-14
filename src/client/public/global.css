@@ -1,25 +1,43 @@
 :root {
-
-  --theme-background: #FFF;
+  --theme-background-light: #FFF;
+  --theme-background-dark: #DDE7F7;
   --theme-text: #333;
+
+  --ui-header-height: 4rem;
+
+
   --overlay-background: rgba(0,0,0,.9);
   --overlay-text : #FFF;
+
   --button-background: none;
-  --button-background-hover: rgb(9, 245, 25);
-  --button-text: #000;
-  --button-text-hover: #000;
-  --button-radius: .1rem;
+  --button-background-hover: #95A;
+  --button-text: var(--theme-text);
+  --button-text-hover: #FFF;
+  --button-radius: 1rem;
 
-  --tr-even: #FFF;
-  --tr-odd: #EEE;
-  --tr-active:  rgb(245, 179, 9);
-
+  --tr-even: rgba(255,255,255,.5);
+  --tr-odd: rgba(220, 220, 220, .4);
+  --tr-active:  rgba(48, 190, 228, 0.3);
+  --tr-scale: rgba(255, 176, 0, 0.48);
 
   --range-track: #CCC;
-  --range-thumb: #FC0;
-  --range-run: #95A;
+  --range-thumb: #95A;
+  --range-run: #FC0;
+  --range-thumb-size: 1.2rem;
+
+
+  --box-border: 1px solid rgba(0,0,0,.2);
+  --box-radius: 1rem;
+
+
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
 html {
   box-sizing: border-box;
@@ -48,7 +66,7 @@ img {
 
 
 body {
-  background: var(--theme-background);
+  background-image: linear-gradient(var(--theme-background-light), var(--theme-background-dark));
   color: var(--theme-text);
 }
 

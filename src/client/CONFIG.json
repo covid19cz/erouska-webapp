@@ -1,4 +1,5 @@
 {
+  "DURATION" : "Duration",
   "ENCOUNTER_FROM" : "Encounter_from",
   "ENCOUNTER_TO" : "Encounter_to",
   "ENCOUNTER_ID" : "Encounter_BT_id",

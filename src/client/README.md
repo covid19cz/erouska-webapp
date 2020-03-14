@@ -32,7 +32,7 @@ npm run build
 
 All required configuration is in `CONFIG.json`
 
-```
+```js
 {
   // server url - can be empty if running on the same machine
   "SERVER" : "",
