@@ -8,7 +8,7 @@ export let durationFilter = 0;
 
 </script>
 
-Duration:
+<label>Duration:</label>
 <input type="range" min="0" max="1200"
   bind:value={durationFilter}
   on:input={(()=> dispatch('change', durationFilter))}
@@ -19,14 +19,24 @@ Minimal contact duration <Duration duration={durationFilter} />
 </p>
 
 <style>
+label {
+  display: block;
+  margin: .5rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+}
+p {
+  font-size: .8rem;
+}
 [type='range'] {
   --range: calc(var(--max) - var(--min));
   --ratio: calc((var(--val) - var(--min))/var(--range));
-  --sx: calc(.5*1.5em + var(--ratio)*(100% - 1.5em));
+  --sx: calc(.5*var(--range-thumb-size) + var(--ratio)*(100% - var(--range-thumb-size)));
   margin: 0;
   padding: 0;
-  width: 12.5em;
-  height: 1.5em;
+  width: 100%;
+  height: var(--range-thumb-size);
+  border-radius: var(--range-thumb-size);
   background: transparent;
   font: 1em/1 arial, sans-serif;
   outline: none;
@@ -37,9 +47,10 @@ Minimal contact duration <Duration duration={durationFilter} />
 [type='range']::-webkit-slider-runnable-track {
   box-sizing: border-box;
   border: none;
-  width: 12.5em;
-  height: 0.25em;
+  width: 100%;
+  height:var(--range-thumb-size);
   background: var(--range-track);
+  border-radius: var(--range-thumb-size);
 }
 [type='range']::-webkit-slider-runnable-track {
   background: linear-gradient(var(--range-run), var(--range-run)) 0/var(--sx) 100% no-repeat var(--range-track);
@@ -47,39 +58,40 @@ Minimal contact duration <Duration duration={durationFilter} />
 [type='range']::-moz-range-track {
   box-sizing: border-box;
   border: none;
-  width: 12.5em;
-  height: 0.25em;
+  width: 100%;
+  height: var(--range-thumb-size);
   background: var(--range-track);
+  border-radius: var(--range-thumb-size);
 }
 [type='range']::-ms-track {
   box-sizing: border-box;
   border: none;
-  width: 12.5em;
-  height: 0.25em;
+  width: 100%;
+  height: var(--range-thumb-size);
   background: var(--range-track);
+  border-radius: var(--range-thumb-size);
 }
 [type='range']::-moz-range-progress {
-  height: 0.25em;
+  height: var(--range-thumb-size);
   background: var(--range-run);
 }
 [type='range']::-ms-fill-lower {
-  height: 0.25em;
+  height: var(--range-thumb-size);
   background: var(--range-run);
 }
 [type='range']::-webkit-slider-thumb {
-  margin-top: -0.625em;
   box-sizing: border-box;
   border: none;
-  width: 1.5em;
-  height: 1.5em;
+  width: var(--range-thumb-size);
+  height: var(--range-thumb-size);
   border-radius: 50%;
   background:  var(--range-thumb);
 }
 [type='range']::-moz-range-thumb {
   box-sizing: border-box;
   border: none;
-  width: 1.5em;
-  height: 1.5em;
+  width: var(--range-thumb-size);
+  height: var(--range-thumb-size);
   border-radius: 50%;
   background:  var(--range-thumb);
 }
@@ -87,8 +99,8 @@ Minimal contact duration <Duration duration={durationFilter} />
   margin-top: 0;
   box-sizing: border-box;
   border: none;
-  width: 1.5em;
-  height: 1.5em;
+  width: var(--range-thumb-size);
+  height: var(--range-thumb-size);
   border-radius: 50%;
   background: var(--range-thumb);
 }
