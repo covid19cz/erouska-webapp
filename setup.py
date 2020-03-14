@@ -5,7 +5,7 @@ setup(
     # Entry point can't be specified in setup.cfg
     entry_points={
         "console_scripts": [
-            "covid19-btwa = btwa.__main__:main"
+            "covid19-btwa = btwa_api.__main__:main"
         ]
     },
 )
