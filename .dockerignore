@@ -1,3 +1,5 @@
 *
 !src
 !setup*
+**/build/
+**/node_modules/
