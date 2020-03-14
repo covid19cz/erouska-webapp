@@ -20,7 +20,8 @@ class WebServer:
         self.router = self.web_app.router
 
         self.router.add_get("/status", status_handler.handle)
-        self.router.add_static("/static", pathlib.Path(__file__).parent / "static")
+        self.logger.info(pathlib.Path(__file__))
+        self.router.add_static("/public", pathlib.Path(__file__).parent.parent / "btwa_frontend" / "public")
         self.router.add_get("/", self.get_index)
 
         self.web_app_handler = None
@@ -41,7 +42,7 @@ class WebServer:
 
     async def get_index(self, request):
         self.statsd.incr("main-page-loaded")
-        return web.FileResponse(pathlib.Path(__file__).parent / "static" / "index.html")
+        return web.FileResponse(pathlib.Path(__file__).parent.parent / "btwa_frontend" / "public" / "index.html")
 
 
 class StatusHandler:
