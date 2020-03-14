@@ -1,0 +1,10 @@
+{
+  "json" : "application/json",
+  "geojson": "application/json",
+  "xml": "text/xml",
+  "xls" : "application/vnd.ms-excel",
+  "xlsx" : "application/vnd.ms-excel",
+  "csv": "text/csv",
+  "tsv": "text/tab-separated-values",
+  "obj": "text/plain"
+}

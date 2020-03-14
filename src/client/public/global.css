@@ -1,0 +1,70 @@
+:root {
+
+  --theme-background: #FFF;
+  --theme-text: #333;
+  --overlay-background: rgba(0,0,0,.9);
+  --overlay-text : #FFF;
+  --button-background: none;
+  --button-background-hover: rgb(9, 245, 25);
+  --button-text: #000;
+  --button-text-hover: #000;
+  --button-radius: .1rem;
+
+  --tr-even: #FFF;
+  --tr-odd: #EEE;
+  --tr-active:  rgb(245, 179, 9);
+
+
+  --range-track: #CCC;
+  --range-thumb: #FC0;
+  --range-run: #95A;
+}
+
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+body {
+  background: var(--theme-background);
+  color: var(--theme-text);
+}
+
+.button {
+  display: inline-block;
+  background: var(--button-background);
+  border: 1px solid var(--button-text);
+  color: var(--button-text);
+  border-radius: var(--button-radius);
+  padding: 0.2rem 1rem;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.button:hover {
+  background: var(--button-background-hover);
+  border: 1px solid var(--button-background-hover);
+  color: var(--button-text-hover);
+}
