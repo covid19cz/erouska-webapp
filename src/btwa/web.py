@@ -6,11 +6,12 @@ from aiohttp import web
 
 
 class WebServer:
-    def __init__(self, status_handler, port=8080, loop=None):
+    def __init__(self, statsd, status_handler, port=8080, loop=None):
         self.logger = logging.getLogger(__name__)
 
         self.port = port
         self.loop = loop
+        self.statd = statsd
 
         if not loop:
             self.loop = asyncio.get_event_loop()
@@ -39,6 +40,7 @@ class WebServer:
         await self.web_app.cleanup()
 
     async def get_index(self, request):
+        self.statd.incr("main-page-loaded")
         return web.FileResponse(pathlib.Path(__file__).parent / "static" / "index.html")
 
 
