@@ -9,7 +9,6 @@ Pairing bluetooth id with phones for tracing human contacts during pandemic.
 Install the dependencies...
 
 ```bash
-cd EpiTrace
 npm install
 ```
 
@@ -35,12 +34,22 @@ npm run build
 You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
 
 
-## Single-page app mode
+## Configuration
 
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+All required configuration is in `CONFIG.json`
 
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+```
+{
+  // server url - can be empty if running on the same machine
+  "SERVER" : "",
+  // POST request endpoint
+  // submits array of BT IDs
+  "GET_PHONE_NUMBERS" : "fakePhones.json"
+  // table column mapping
+  "ENCOUNTER_FROM" : "Encounter_from",  
+  "ENCOUNTER_TO" : "Encounter_to",
+  "ENCOUNTER_ID" : "Encounter_BT_id",
+  "PHONE_NUMBER" : "Phone_Number",
+}
 
-```js
-"start": "sirv public --single"
 ```
