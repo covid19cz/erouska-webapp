@@ -11,7 +11,7 @@ class WebServer:
 
         self.port = port
         self.loop = loop
-        self.statd = statsd
+        self.statsd = statsd
 
         if not loop:
             self.loop = asyncio.get_event_loop()
@@ -40,7 +40,7 @@ class WebServer:
         await self.web_app.cleanup()
 
     async def get_index(self, request):
-        self.statd.incr("main-page-loaded")
+        self.statsd.incr("main-page-loaded")
         return web.FileResponse(pathlib.Path(__file__).parent / "static" / "index.html")
 
 

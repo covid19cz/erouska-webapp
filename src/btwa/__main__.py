@@ -23,7 +23,7 @@ class App:
         # webserver
         status_handler = StatusHandler(self.config.get_string("app_name"), self.healthcheck)
         self.web_server = WebServer(
-            status_handler, self.statsd, loop=self.loop
+            self.statsd, status_handler, loop=self.loop
         )
 
     async def healthcheck(self):
