@@ -1,0 +1,17 @@
+venv/
+dist/
+build/
+*.eggs
+*.egg-info/
+*.pyc
+*/__pycache__/
+.pytest_cache/
+.mypy_cache/
+tags
+
+htmlcov/
+.coverage
+
+*.swp
+*.swo
+
