@@ -4,7 +4,7 @@ import asyncio
 import statsd
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from .web import StatusHandler, WebServer
+from .web import StatusHandler, WebServer, TraceHandler
 from pyhocon import ConfigFactory
 
 
@@ -22,8 +22,10 @@ class App:
     async def setup(self):
         # webserver
         status_handler = StatusHandler(self.config.get_string("app_name"), self.healthcheck)
+        trace_handler = TraceHandler(self.statsd)
+
         self.web_server = WebServer(
-            self.statsd, status_handler, loop=self.loop
+            self.statsd, status_handler, trace_handler, loop=self.loop
         )
 
     async def healthcheck(self):
