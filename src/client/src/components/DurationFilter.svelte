@@ -4,18 +4,19 @@ import { createEventDispatcher } from 'svelte';
 
 const dispatch = createEventDispatcher();
 
-export let durationFilter = 0;
+export let value = 0;
+export let max = 0;
 
 </script>
 
 <label>Duration:</label>
-<input type="range" min="0" max="1200"
-  bind:value={durationFilter}
-  on:input={(()=> dispatch('change', durationFilter))}
-  style="--min: 0; --max: 1200; --val: {durationFilter}"
+<input type="range" min="0" max={max-1}
+  bind:value={value}
+  on:input={(()=> dispatch('change', value))}
+  style="--min: 0; --max: {max}; --val: {value}"
   />
 <p>
-Minimal contact duration <Duration duration={durationFilter} />
+Minimal contact duration <Duration duration={value+1} />
 </p>
 
 <style>

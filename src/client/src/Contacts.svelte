@@ -16,6 +16,7 @@ import Duration from './components/Duration.svelte';
 export let data = [];
 
 let durationFilter = 0;
+let durationMax = 0;
 let focusContact = null;
 let durationScale = null;
 
@@ -31,7 +32,7 @@ function applyFilter(data, durationFilter) {
     max = Math.max(max, d[DURATION]);
     return (durationFilter > 0) ? d[DURATION] > durationFilter*1000 : true;
   });
-  console.log(min, max);
+  durationMax = max;
   durationScale = scaleLinear()
     .domain([min, max])
     .range([0,100]);
@@ -43,7 +44,7 @@ function applyFilter(data, durationFilter) {
 
 <div class="filters">
   <div>
-    <DurationFilter durationFilter={durationFilter} on:change={e => durationFilter  = e.detail} />
+    <DurationFilter value={durationFilter} max={durationMax/1000} on:change={e => durationFilter  = e.detail} />
   </div>
 </div>
 <div class="scroll">
@@ -133,6 +134,8 @@ function applyFilter(data, durationFilter) {
     width: 0;
     height: 100%;
     background: var(--tr-scale);
+    pointer-events: none;
+    user-select: none;
     z-index: -1;
   }
 

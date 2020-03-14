@@ -11,10 +11,12 @@ function secondsToHms(d) {
     var m = Math.floor(d % 3600 / 60);
     var s = Math.floor(d % 3600 % 60);
 
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-    var sDisplay = s >= 0 ? s + (s == 1 ? " second" : " seconds") : "";
-    return hDisplay + mDisplay + sDisplay;
+    var duration = {};
+    if (h > 0) duration.h = h + (h == 1 ? ' hour ' : ' hours ');
+    if (m > 0 ) duration.m = m + (m == 1 ? ' minute ' : ' minutes ');
+    if (s > 0) duration.s = s + (s == 1 ? ' second' : ' seconds');
+
+    return Object.keys(duration).map(d => duration[d]).join(',');
 }
 
 
