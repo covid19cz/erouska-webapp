@@ -1,0 +1,47 @@
+.table {
+  width: 100%;
+}
+.table tr th,
+.table tr td {
+  padding: .2rem;
+  font-size: .8rem;
+}
+
+.table tr th {
+  background: var(--th-background);
+  color: var(--th-color);
+  padding: .5rem;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.table tr td {
+  font-family: var(--font-monospace);
+}
+.table tr:nth-child(even)  td {
+  background: var(--tr-even);
+}
+.table tr:nth-child(odd)  td {
+  background: var(--tr-odd);
+}
+.table tr.active td {
+  background: var(--tr-active);
+}
+
+.table tr td.actions {
+  text-align: center;
+}
+.table tr td.duration {
+  position: relative;
+}
+.table tr td .duration-scale {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background: var(--tr-scale);
+  pointer-events: none;
+  user-select: none;
+  z-index: -1;
+}
