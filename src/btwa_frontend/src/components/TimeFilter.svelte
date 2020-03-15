@@ -11,16 +11,16 @@ export let min = 0;
 </script>
 
 <label>Period:</label>
-
 <input type="range"
   min={min}
   max={max}
+  class="reverse"
   bind:value={value}
   on:input={()=> dispatch('change', value)}
   style="--min: {min}; --max: {max}; --val: {value}"
   />
 <p>
-Last <Duration duration={max - value} />
+Last <Duration duration={(max - value)/1000} />
 </p>
 
 <style>
