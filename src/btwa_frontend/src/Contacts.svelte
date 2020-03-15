@@ -70,10 +70,10 @@ function applyFilter(data, minDuration, minTime) {
 </script>
 
 <div class="filters">
-  <div>
+  <div class:active={durationFilter > 0}>
     <DurationFilter value={durationFilter} max={durationMax/1000} on:change={e => durationFilter = e.detail} />
   </div>
-  <div>
+  <div class:active={timeFilter > timeMin} >
     <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter = e.detail} />
   </div>
 </div>
@@ -141,11 +141,14 @@ function applyFilter(data, minDuration, minTime) {
     padding: .5rem;
   }
   .filters > div {
-    max-width: 32%;
+    width: 49%;
     border: var(--box-border);
-    margin:  0 1% 1%;
+    margin:  .5rem;
     padding: 1rem;
     border-radius: var(--box-radius);
     flex-grow: 1;
+  }
+  .filters > div.active {
+    box-shadow: 10px 10px 10px 0 rgba(0,0,0,.1);
   }
 </style>
