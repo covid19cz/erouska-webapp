@@ -30,13 +30,14 @@ $: d = applyFilter(data, durationFilter, timeFilter);
 
 
 // filter and calculate full ranges
-function applyFilter(data, durationFilter, minTime) {
+function applyFilter(data, minDuration, minTime) {
   let filtered = data;
   let dMin = 0;
   let dMax = 0;
   let tMin = undefined;
   let tMax = undefined;
 
+  // apply time and duration filters
   filtered = data.filter(d => {
     const from = new Date(d[ENCOUNTER_FROM]).valueOf();
     const to = new Date(d[ENCOUNTER_TO]).valueOf();
@@ -46,16 +47,19 @@ function applyFilter(data, durationFilter, minTime) {
 
     tMin = (tMin) ? Math.min(tMin, from) : from;
     tMax = (tMax) ? Math.max(tMax, to) : to;
-    return (durationFilter > 0) ? d[DURATION] > durationFilter*1000 : true
-            && from >= minTime;
+
+    return (
+      from >= minTime
+      && ((minDuration > 0) ? d[DURATION] > minDuration*1000 : true)
+    )
   });
+
   durationMax = dMax;
 
   durationScale = scaleLinear()
     .domain([dMin, dMax])
     .range([0,100]);
 
-  timeFilter = tMin;
   timeMax = tMax;
   timeMin = tMin;
 
@@ -67,10 +71,10 @@ function applyFilter(data, durationFilter, minTime) {
 
 <div class="filters">
   <div>
-    <DurationFilter value={durationFilter} max={durationMax/1000} on:change={e => durationFilter  = e.detail} />
+    <DurationFilter value={durationFilter} max={durationMax/1000} on:change={e => durationFilter = e.detail} />
   </div>
   <div>
-    <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter  = e.detail} />
+    <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter = e.detail} />
   </div>
 </div>
 <div class="scroll">
