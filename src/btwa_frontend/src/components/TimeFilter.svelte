@@ -10,16 +10,17 @@ export let min = 0;
 
 </script>
 
-<label>Duration:</label>
+<label>Period:</label>
+
 <input type="range"
   min={min}
-  max={max-1}
+  max={max}
   bind:value={value}
   on:input={()=> dispatch('change', value)}
-  style="--min: 0; --max: {max}; --val: {value}"
+  style="--min: {min}; --max: {max}; --val: {value}"
   />
 <p>
-Minimal contact duration <Duration duration={value+1} />
+Last <Duration duration={max - value} />
 </p>
 
 <style>

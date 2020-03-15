@@ -9,33 +9,56 @@ import {
 
 import { scaleLinear } from 'd3';
 
-import DurationFilter from './components/DurationFilter.svelte';
 import Duration from './components/Duration.svelte';
+import DurationFilter from './components/DurationFilter.svelte';
+import TimeFilter from './components/TimeFilter.svelte';
 
 
 export let data = [];
 
+let focusContact = null;
+
 let durationFilter = 0;
 let durationMax = 0;
-let focusContact = null;
 let durationScale = null;
 
-$: d = applyFilter(data, durationFilter);
+let timeFilter = 0;
+let timeMin = 0;
+let timeMax = 0;
 
-function applyFilter(data, durationFilter) {
+$: d = applyFilter(data, durationFilter, timeFilter);
+
+
+// filter and calculate full ranges
+function applyFilter(data, durationFilter, minTime) {
   let filtered = data;
-  let min = 0;
-  let max = 0;
+  let dMin = 0;
+  let dMax = 0;
+  let tMin = undefined;
+  let tMax = undefined;
 
   filtered = data.filter(d => {
-    min = Math.min(min, d[DURATION]);
-    max = Math.max(max, d[DURATION]);
-    return (durationFilter > 0) ? d[DURATION] > durationFilter*1000 : true;
+    const from = new Date(d[ENCOUNTER_FROM]).valueOf();
+    const to = new Date(d[ENCOUNTER_TO]).valueOf();
+
+    dMin = Math.min(dMin, d[DURATION]);
+    dMax = Math.max(dMax, d[DURATION]);
+
+    tMin = (tMin) ? Math.min(tMin, from) : from;
+    tMax = (tMax) ? Math.max(tMax, to) : to;
+    return (durationFilter > 0) ? d[DURATION] > durationFilter*1000 : true
+            && from >= minTime;
   });
-  durationMax = max;
+  durationMax = dMax;
+
   durationScale = scaleLinear()
-    .domain([min, max])
+    .domain([dMin, dMax])
     .range([0,100]);
+
+  timeFilter = tMin;
+  timeMax = tMax;
+  timeMin = tMin;
+
 
   return filtered;
 }
@@ -45,6 +68,9 @@ function applyFilter(data, durationFilter) {
 <div class="filters">
   <div>
     <DurationFilter value={durationFilter} max={durationMax/1000} on:change={e => durationFilter  = e.detail} />
+  </div>
+  <div>
+    <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter  = e.detail} />
   </div>
 </div>
 <div class="scroll">
