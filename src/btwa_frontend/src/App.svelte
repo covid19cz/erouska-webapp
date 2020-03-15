@@ -10,7 +10,7 @@ import Contacts from './Contacts.svelte';
 
   <header>
     <svg>
-      <use xlink:href="icons.svg#logo" />
+      <use xlink:href="res/icons.svg#logo" />
     </svg>
     <h1>EpiTrace</h1>
     <label class="button" for="uploadfile">Load file</label>
