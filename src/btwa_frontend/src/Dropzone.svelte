@@ -96,7 +96,7 @@ onMount(() => {
     left: 0;
     overflow: hidden;
     background: var(--overlay-background);
-    color: #FFF;
+    color: var(--overlay-color);
     display: flex;
     justify-content: center;
     align-items: center;

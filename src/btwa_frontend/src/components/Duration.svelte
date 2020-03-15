@@ -4,17 +4,24 @@ export let duration = 0;
 
 $: readable = secondsToHms (duration);
 
-function secondsToHms(d) {
-    d = Number(d);
+function secondsToHms(timestamp) {
+  const duration = {};
 
-    var h = Math.floor(d / 3600);
-    var m = Math.floor(d % 3600 / 60);
-    var s = Math.floor(d % 3600 % 60);
+  timestamp = Number(timestamp);
 
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-    var sDisplay = s >= 0 ? s + (s == 1 ? " second" : " seconds") : "";
-    return hDisplay + mDisplay + sDisplay;
+  // count days, hours, minutes and seconds
+  var d = Math.floor(timestamp / 3600 / 24);
+  var h = Math.floor(timestamp / 3600 % 24);
+  var m = Math.floor(timestamp % 3600 / 60);
+  var s = Math.floor(timestamp % 3600 % 60);
+
+  if (d > 0) duration.d = d + (d == 1 ? ' day ' : ' days ');
+  if (h > 0) duration.h = h + (h == 1 ? ' hour ' : ' hours ');
+  if (m > 0 ) duration.m = m + (m == 1 ? ' minute ' : ' minutes ');
+  if (s > 0) duration.s = s + (s == 1 ? ' second' : ' seconds');
+
+  // map object to , separated string
+  return Object.keys(duration).map(d => duration[d]).join(',');
 }
 
 

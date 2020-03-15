@@ -21,7 +21,7 @@ class WebServer:
 
         self.router.add_get("/status", status_handler.handle)
         self.logger.info(pathlib.Path(__file__))
-        self.router.add_static("/public", pathlib.Path(__file__).parent.parent / "btwa_frontend" / "public")
+        self.router.add_static("/res", pathlib.Path(__file__).parent.parent / "btwa_frontend" / "public" / "res")
         self.router.add_get("/", self.get_index)
         self.router.add_post("/trace", trace_handler.handle)
 

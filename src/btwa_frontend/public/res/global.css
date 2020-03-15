@@ -1,0 +1,105 @@
+@import url("table.css");
+@import url("range.css");
+
+
+:root {
+
+  --font: Arial, Helvetica, sans-serif;
+  --font-monospace: "Lucida Console", Monaco, monospace;
+
+  --theme-background-light: #FFF;
+  --theme-background-dark: #DDE7F7;
+  --theme-color: #333;
+
+  --theme-highlight:  #291E98;
+  --theme-highlight-color: #FFF;
+
+  --ui-header-height: 4rem;
+  --ui-header-background: var(--theme-highlight);
+  --ui-header-color: var(--theme-highlight-color);
+
+  --highlight: rgba(48, 190, 228, 0.3);
+
+  --overlay-background: rgba(0,0,0,.9);
+  --overlay-color : #FFF;
+
+  --button-background: none;
+  --button-background-hover: var(--theme-highlight);
+  --button-color: inherit;
+  --button-text-hover: #FFF;
+  --button-radius: 1rem;
+
+
+  --th-background: rgba(220, 220, 220, .8);
+  --th-color: #000;
+
+  --tr-even: rgba(255,255,255,.5);
+  --tr-odd: rgba(220, 220, 220, .4);
+  --tr-active:  var(--highlight);
+  --tr-scale: var(--highlight);
+
+  --range-track: rgba(0,0,0,.1);
+  --range-thumb: var(--theme-highlight);
+  --range-run: var(--highlight);
+  --range-thumb-size: 1.2rem;
+
+
+  --box-border: 1px solid rgba(0,0,0,.2);
+  --box-radius: 1rem;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  font-weight: normal;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+body {
+  background-image: linear-gradient(var(--theme-background-light), var(--theme-background-dark));
+  color: var(--theme-color);
+}
+
+.button {
+  display: inline-block;
+  background: var(--button-background);
+  border: 1px solid var(--theme-color);
+  border-color: var(--button-color);
+  color: var(--button-color);
+  border-radius: var(--button-radius);
+  padding: 0.2rem 1rem;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.button:hover {
+  background: var(--button-background-hover);
+  border: 1px solid var(--button-text-hover);
+  color: var(--button-text-hover);
+}

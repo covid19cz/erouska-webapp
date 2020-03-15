@@ -1,38 +1,88 @@
 <script>
-import { ENCOUNTER_TO, ENCOUNTER_FROM, ENCOUNTER_ID, PHONE_NUMBER } from '../CONFIG.json';
+import {
+  ENCOUNTER_TO,
+  ENCOUNTER_FROM,
+  ENCOUNTER_ID,
+  DURATION,
+  PHONE_NUMBER
+} from '../CONFIG.json';
 
+import { scaleLinear } from 'd3';
+
+import Duration from './components/Duration.svelte';
 import DurationFilter from './components/DurationFilter.svelte';
+import TimeFilter from './components/TimeFilter.svelte';
 
 
 export let data = [];
 
-let durationFilter = 0;
 let focusContact = null;
 
-$: d = applyFilter(data, durationFilter);
+let durationFilter = 0;
+let durationMax = 0;
+let durationScale = null;
 
-function applyFilter(data, durationFilter) {
+let timeFilter = 0;
+let timeMin = 0;
+let timeMax = 0;
+
+$: d = applyFilter(data, durationFilter, timeFilter);
+
+
+// filter and calculate full ranges
+function applyFilter(data, minDuration, minTime) {
   let filtered = data;
-  if (durationFilter > 0) {
-    filtered = data.filter(d => {
-      return (new Date(d[ENCOUNTER_TO])).valueOf() - (new Date(d[ENCOUNTER_FROM])).valueOf() > durationFilter*1000;
-    })
-  }
+  let dMin = 0;
+  let dMax = 0;
+  let tMin = undefined;
+  let tMax = undefined;
+
+  // apply time and duration filters
+  filtered = data.filter(d => {
+    const from = new Date(d[ENCOUNTER_FROM]).valueOf();
+    const to = new Date(d[ENCOUNTER_TO]).valueOf();
+
+    dMin = Math.min(dMin, d[DURATION]);
+    dMax = Math.max(dMax, d[DURATION]);
+
+    tMin = (tMin) ? Math.min(tMin, from) : from;
+    tMax = (tMax) ? Math.max(tMax, to) : to;
+
+    return (
+      from >= minTime
+      && ((minDuration > 0) ? d[DURATION] > minDuration*1000 : true)
+    )
+  });
+
+  durationMax = dMax;
+
+  durationScale = scaleLinear()
+    .domain([dMin, dMax])
+    .range([0,100]);
+
+  timeMax = tMax;
+  timeMin = tMin;
+
 
   return filtered;
 }
 
 </script>
-<h3>Filters</h3>
-<div>
-  <DurationFilter durationFilter={durationFilter} on:change={e => durationFilter  = e.detail} />
-</div>
 
+<div class="filters">
+  <div class:active={durationFilter > 0}>
+    <DurationFilter value={durationFilter} max={durationMax/1000} on:change={e => durationFilter = e.detail} />
+  </div>
+  <div class:active={timeFilter > timeMin} >
+    <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter = e.detail} />
+  </div>
+</div>
+<div class="scroll">
 {#if d && d.length > 0}
-  <table>
+  <table class="table">
     <tr>
       {#each Object.keys(d[0]) as col}
-        <th>{col}</th>
+        <th>{col.replace(/_/g, ' ')}</th>
       {/each}
     </tr>
 
@@ -41,15 +91,24 @@ function applyFilter(data, durationFilter) {
         on:mouseover={() => focusContact = item[ENCOUNTER_ID] }
         class:active={item[ENCOUNTER_ID] == focusContact}>
         {#each Object.keys(item) as col}
-          <td>
+
             {#if col == PHONE_NUMBER}
-              <a href="tel:{item[col]}" class="button">{item[col]}</a>
+              <td class="actions">
+                <a href="tel:{item[col]}" class="button">{item[col]}</a>
+              </td>
+
+            {:else if col == DURATION}
+              <td class="duration">
+                <div class="duration-scale" style="width: {durationScale(item[DURATION])}%"></div>
+                <Duration duration={item[col]/1000} />
+              </td>
+
             {:else}
-              {item[col]}
+              <td>{item[col]}</td>
             {/if}
 
-          </td>
         {/each}
+
       </tr>
     {/each}
   </table>
@@ -58,32 +117,38 @@ function applyFilter(data, durationFilter) {
     No data.
   </div>
 {/if}
-
+</div>
 <style>
 
-  table {
-    width: 100%;
-  }
-  tr th,
-  tr td {
-    padding: .2rem;
-    font-size: .8rem;
-  }
-
-  tr th {
-    background: var(--tr-odd);
-  }
-  tr:nth-child(even)  td {
-    background: var(--tr-even);
-  }
-  tr:nth-child(odd)  td {
-    background: var(--tr-odd);
-  }
-  tr.active td {
-    background: var(--tr-active);
+  .scroll {
+    position: absolute;
+    left: 0;
+    top: 10rem;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    margin: 1rem;
   }
 
-  .phone {
-
+  .filters {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 10rem;
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem;
+  }
+  .filters > div {
+    width: 49%;
+    border: var(--box-border);
+    margin:  .5rem;
+    padding: 1rem;
+    border-radius: var(--box-radius);
+    flex-grow: 1;
+  }
+  .filters > div.active {
+    box-shadow: 10px 10px 10px 0 rgba(0,0,0,.1);
   }
 </style>

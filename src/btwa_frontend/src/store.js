@@ -1,6 +1,14 @@
 import { writable, derived } from 'svelte/store';
 
-import { ENCOUNTER_ID, SERVER, GET_PHONE_NUMBERS, PHONE_NUMBER } from '../CONFIG.json';
+import {
+  ENCOUNTER_TO,
+  ENCOUNTER_FROM,
+  ENCOUNTER_ID,
+  DURATION,
+  SERVER,
+  GET_PHONE_NUMBERS,
+  PHONE_NUMBER
+} from '../CONFIG.json';
 
 
 export const contacts = writable(null);
@@ -24,6 +32,7 @@ export const phones = derived(contacts, async (contacts, set) => {
     .then(response => response.json())
     .then(phones => {
       set(contacts.map(c => {
+        c[DURATION] = (new Date(c[ENCOUNTER_TO])).valueOf() - (new Date(c[ENCOUNTER_FROM])).valueOf()
         c[PHONE_NUMBER] = phones[c[ENCOUNTER_ID]] || undefined;
         return c;
       }));
