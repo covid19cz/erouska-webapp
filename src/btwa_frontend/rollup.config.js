@@ -15,7 +15,7 @@ export default [{
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'public/build/bundle.js'
+		file: 'public/res/build/bundle.js'
 	},
 	onwarn: function (warning, warn) {
     if (warning.code === 'CIRCULAR_DEPENDENCY') return;
@@ -46,7 +46,7 @@ export default [{
 			// we'll extract any component CSS out into
 			// a separate file  better for performance
 			css: css => {
-				css.write('public/build/bundle.css');
+				css.write('public/res/build/bundle.css');
 			}
 		}),
 		builtins(),
