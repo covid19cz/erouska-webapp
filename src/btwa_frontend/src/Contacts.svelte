@@ -49,7 +49,7 @@ function applyFilter(data, durationFilter) {
 </div>
 <div class="scroll">
 {#if d && d.length > 0}
-  <table>
+  <table class="table">
     <tr>
       {#each Object.keys(d[0]) as col}
         <th>{col.replace(/_/g, ' ')}</th>
@@ -97,46 +97,7 @@ function applyFilter(data, durationFilter) {
     right: 0;
     bottom: 0;
     overflow: auto;
-  }
-  table {
-    width: 100%;
-  }
-  tr th,
-  tr td {
-    padding: .2rem;
-    font-size: .8rem;
-  }
-
-  tr th {
-    background: var(--tr-odd);
-    padding: .5rem;
-  }
-  tr:nth-child(even)  td {
-    background: var(--tr-even);
-  }
-  tr:nth-child(odd)  td {
-    background: var(--tr-odd);
-  }
-  tr.active td {
-    background: var(--tr-active);
-  }
-
-  tr td.actions {
-    text-align: center;
-  }
-  tr td.duration {
-    position: relative;
-  }
-  tr td .duration-scale {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 100%;
-    background: var(--tr-scale);
-    pointer-events: none;
-    user-select: none;
-    z-index: -1;
+    margin: 1rem;
   }
 
   .filters {
