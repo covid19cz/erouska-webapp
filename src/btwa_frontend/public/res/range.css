@@ -25,6 +25,9 @@
 [type='range']::-webkit-slider-runnable-track {
   background: linear-gradient(var(--range-run), var(--range-run)) 0/var(--sx) 100% no-repeat var(--range-track);
 }
+[type='range'].reverse::-webkit-slider-runnable-track {
+  background: linear-gradient(var(--range-run), var(--range-run)) 0/var(--sx) 100% no-repeat var(--range-track);
+}
 [type='range']::-moz-range-track {
   box-sizing: border-box;
   border: none;
