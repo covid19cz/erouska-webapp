@@ -5,5 +5,5 @@
   "ENCOUNTER_ID" : "Encounter_BT_id",
   "PHONE_NUMBER" : "Phone_Number",
   "SERVER" : "",
-  "GET_PHONE_NUMBERS" : "res/fakePhones.json"
+  "GET_PHONE_NUMBERS" : "trace"
 }
