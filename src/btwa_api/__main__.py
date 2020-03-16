@@ -1,6 +1,7 @@
 from os.path import join, dirname, realpath
 import logging
 import asyncio
+import argparse
 import statsd
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -19,13 +20,13 @@ class App:
 
         self.statsd = statsd.StatsClient(self.config.get_string("statsd.host"), 8125, prefix=self.config.get_string("statsd.prefix"))
 
-    async def setup(self):
+    async def setup(self, port):
         # webserver
         status_handler = StatusHandler(self.config.get_string("app_name"), self.healthcheck)
         trace_handler = TraceHandler(self.statsd)
 
         self.web_server = WebServer(
-            self.statsd, status_handler, trace_handler, loop=self.loop
+            self.statsd, status_handler, trace_handler, loop=self.loop, port=port
         )
 
     async def healthcheck(self):
@@ -41,11 +42,15 @@ class App:
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', '-p', help="Webserver port (defaults to 8080)", default=8080, required=False)
+    args = parser.parse_args()
+
     loop = asyncio.get_event_loop()
     loop.set_default_executor(ThreadPoolExecutor(max_workers=10))
 
     app = App(loop)
-    loop.run_until_complete(app.setup())
+    loop.run_until_complete(app.setup(args.port))
 
     try:
         loop.run_until_complete(app.run())

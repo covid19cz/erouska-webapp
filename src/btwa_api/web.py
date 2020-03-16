@@ -30,7 +30,7 @@ class WebServer:
 
     async def start(self):
         self.web_app_handler = self.web_app.make_handler()
-        self.logger.info("Starting webserver")
+        self.logger.info("Webserver started on port %s", self.port)
         self.web_server = await self.loop.create_server(
             self.web_app_handler, "0.0.0.0", self.port
         )
