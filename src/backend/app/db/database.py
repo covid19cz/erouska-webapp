@@ -1,5 +1,5 @@
-from app.config import logger
 from app.models.user import User
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 
@@ -14,6 +14,5 @@ class Database:
             self.session.add(user)
             self.session.commit()
             return True
-        except Exception as e:
-            logger.error(e)
+        except IntegrityError:
             return False
