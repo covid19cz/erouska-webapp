@@ -1,10 +1,10 @@
 import pathlib
 
 import uvicorn
-from app.api.endpoints import router as trace_router
-from app.api.frontend import router as frontend_router
-from app.api.healthcheck import router as healthcheck_router
-from app.db.session import Session
+from btwa_api.app.api.endpoints import router as trace_router
+from btwa_api.app.api.frontend import router as frontend_router
+from btwa_api.app.api.healthcheck import router as healthcheck_router
+from btwa_api.app.db.session import Session
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
@@ -31,5 +31,9 @@ async def db_session_middleware(request: Request, call_next):
 # app.add_middleware(HTTPSRedirectMiddleware) TODO
 
 
+def serve():
+    uvicorn.run("btwa_api:app", host="127.0.0.1", port=5000, log_level="info")
+
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=5000, log_level="info")
+    serve()

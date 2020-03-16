@@ -1,4 +1,4 @@
-from app.models.user import User
+from ..models.user import User
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 

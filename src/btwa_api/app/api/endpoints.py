@@ -1,6 +1,6 @@
-from app.db.database import Database
-from app.db.utils import get_db
-from app.security import check_basic_auth, security
+from ..db.database import Database
+from ..db.utils import get_db
+from ..security import check_basic_auth, security
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBasicCredentials
 

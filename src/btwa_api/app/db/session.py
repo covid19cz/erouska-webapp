@@ -1,4 +1,4 @@
-from app.config import DATABASE_URI
+from ..config import DATABASE_URI
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 

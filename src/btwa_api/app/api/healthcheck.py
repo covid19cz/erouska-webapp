@@ -1,4 +1,4 @@
-from app.config import statsd
+from ..config import statsd
 from fastapi import APIRouter
 
 router = APIRouter()

@@ -1,6 +1,6 @@
 import pathlib
 
-from app.config import statsd
+from ..config import statsd
 from fastapi import APIRouter
 from starlette.responses import HTMLResponse
 
