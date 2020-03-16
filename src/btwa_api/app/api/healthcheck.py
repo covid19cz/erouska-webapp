@@ -5,6 +5,6 @@ router = APIRouter()
 
 
 @router.get("/status")
-def healthcheck():
+async def healthcheck():
     statsd.incr("healthchecked")
     return {"app": "", "healthy": True}
