@@ -31,9 +31,13 @@ async def db_session_middleware(request: Request, call_next):
 # app.add_middleware(HTTPSRedirectMiddleware) TODO
 
 
+def webserver(module):
+    uvicorn.run(module, host="127.0.0.1", port=5000, log_level="info")
+
+
 def serve():
-    uvicorn.run("btwa_api:app", host="127.0.0.1", port=5000, log_level="info")
+    webserver("btwa_api.main:app")
 
 
 if __name__ == "__main__":
-    serve()
+    webserver("main:app")
