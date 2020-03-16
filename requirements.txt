@@ -1,7 +1,0 @@
-aiohttp==3.6.2
-statsd==3.3.0
-pyhocon==0.3
-fastapi==0.52
-pytest-runner
-aiofiles==0.4.0
-uvicorn==0.11
