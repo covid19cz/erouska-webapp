@@ -1,14 +1,13 @@
 import pathlib
 
-import statsd
 import uvicorn
-from app.config import statsd
+from app.api.endpoints import router as trace_router
+from app.api.frontend import router as frontend_router
+from app.api.healthcheck import router as healthcheck_router
 from app.db.session import Session
-from app.tracing import router as trace_router
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
-from starlette.responses import HTMLResponse
 
 FILE_DIR = pathlib.Path(__file__).absolute().parent
 SRC_DIR = FILE_DIR.parent
@@ -16,7 +15,9 @@ STATIC_PATH = SRC_DIR / "btwa_frontend" / "public" / "res"
 
 app = FastAPI()
 app.mount("/res", StaticFiles(directory=STATIC_PATH), name="static")
+app.include_router(frontend_router)
 app.include_router(trace_router)
+app.include_router(healthcheck_router)
 
 
 @app.middleware("http")
@@ -28,19 +29,6 @@ async def db_session_middleware(request: Request, call_next):
 
 
 # app.add_middleware(HTTPSRedirectMiddleware) TODO
-
-
-@app.get("/", response_class=HTMLResponse)
-def index():
-    statsd.incr("main-page-loaded")
-    with open(SRC_DIR / "btwa_frontend" / "public" / "index.html") as f:
-        return f.read()
-
-
-@app.get("/status")
-def healthcheck():
-    statsd.incr("healthchecked")
-    return {"app": "", "healthy": True}
 
 
 if __name__ == "__main__":
