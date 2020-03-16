@@ -18,7 +18,8 @@ class App:
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-        self.statsd = statsd.StatsClient(self.config.get_string("statsd.host"), 8125, prefix=self.config.get_string("statsd.prefix"))
+        self.statsd = statsd.StatsClient(self.config.get_string("statsd.host"), 8125,
+                                         prefix=self.config.get_string("statsd.prefix"))
 
     async def setup(self, port):
         # webserver

@@ -13,6 +13,10 @@ class WebServer:
         self.loop = loop
         self.statsd = statsd
 
+        if self.is_port_in_use(self.port):
+            self.logger.warning("Port %s is already in use. Server not started.", self.port)
+            quit(1)
+
         if not loop:
             self.loop = asyncio.get_event_loop()
 
@@ -44,6 +48,13 @@ class WebServer:
     async def get_index(self, request):
         self.statsd.incr("main-page-loaded")
         return web.FileResponse(pathlib.Path(__file__).parent.parent / "btwa_frontend" / "public" / "index.html")
+
+    @staticmethod
+    def is_port_in_use(port):
+        import socket
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            return s.connect_ex(('0.0.0.0', int(port))) == 0
+
 
 
 class StatusHandler:
