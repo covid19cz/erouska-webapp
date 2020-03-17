@@ -27,6 +27,7 @@ RUN apt-get update && \
     apt-get update && \
     ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql17 build-essential unixodbc && \
     pip install . && \
+    pip install gunicorn && \
     dpkg -P unixodbc-dev build-essential && \
     apt-get -y autoremove && \
     apt-get -y clean && \
@@ -36,6 +37,10 @@ WORKDIR /usr/src/app/src/btwa_api
 
 ENV WORKER_COUNT 4
 ENV PORT 5000
+ENV FORWARDED_ALLOW_IPS 127.0.0.1
 
 CMD alembic upgrade head && \
-    uvicorn main:app --loop uvloop --workers ${WORKER_COUNT} --host 0.0.0.0 --port ${PORT}
+    uvicorn main:app --forwarded-allow-ips ${FORWARDED_ALLOW_IPS} --loop uvloop --workers ${WORKER_COUNT} --host 0.0.0.0 --port ${PORT}
+
+# in case we need process manager:
+#    gunicorn -w 4 -k uvicorn.workers.UvicornWorker --preload --forwarded-allow-ips ${PROXY_ALLOW_FROM} --keep-alive 15 main:app
