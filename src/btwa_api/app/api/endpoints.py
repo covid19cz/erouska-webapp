@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBasicCredentials
 
 from ..db.database import Database
+from ..db.firebase import Firebase, get_firebase
 from ..db.utils import get_db
 from ..security import check_handler_auth, security
 from starlette.responses import JSONResponse
@@ -9,15 +10,16 @@ from starlette.responses import JSONResponse
 router = APIRouter()
 
 
-@router.get("/register/{guid}")
-def register(guid: str,
-             credentials: HTTPBasicCredentials = Depends(security),
-             db: Database = Depends(get_db)):
+@router.get("/proximity/{phone}")
+def get_proximity(phone: str,
+                  credentials: HTTPBasicCredentials = Depends(security),
+                  firebase: Firebase = Depends(get_firebase),
+                  db: Database = Depends(get_db)):
     check_handler_auth(db, credentials)
-    if db.add_user(guid):
-        return True
-    else:
-        raise HTTPException(status_code=400, detail="GUID already exists")
+    proximity = firebase.get_proximity_by_phone(phone)
+    if proximity is None:
+        raise HTTPException(status_code=404)
+    return proximity
 
 @router.post("/trace", response_class=JSONResponse)
 def trace():
