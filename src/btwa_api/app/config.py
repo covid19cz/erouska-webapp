@@ -1,12 +1,11 @@
 import logging
+import os
 import pathlib
 import sys
 import urllib
 
 import statsd
 from pyhocon import ConfigFactory
-
-import os
 
 ROOT_DIR = pathlib.Path(__file__).absolute().parent.parent
 DATABASE_URI = os.environ.get("DATABASE_URI", f"sqlite:///{ROOT_DIR / 'test.db'}")
