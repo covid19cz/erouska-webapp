@@ -10,19 +10,29 @@ RUN apt-get install -y nodejs
 COPY ./src/btwa_frontend /usr/src/app/src/btwa_frontend
 WORKDIR /usr/src/app/src/btwa_frontend
 
-RUN npm i
+RUN npm ci
 RUN npm run build
 
 FROM python:3.7-slim AS build_python
 
 COPY . /usr/src/app
 COPY --from=build_js /usr/src/app/src/btwa_frontend/public /usr/src/app/src/btwa_frontend/public
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql17 build-essential
+
 WORKDIR /usr/src/app
-RUN pip wheel --no-deps -w /pkgs .
 
-FROM python:3.7-slim
+# just install deps
+RUN pip install .
 
-COPY --from=build_python /pkgs/bluetooth_tracing_web_app* /pkgs/
-RUN pip install /pkgs/bluetooth_tracing_web_app* && rm -rf ~/.cache
+WORKDIR /usr/src/app/src/btwa_api
 
-CMD ["covid19-btwa"]
+ENV WORKER_COUNT 4
+ENV PORT 5000
+
+CMD alembic upgrade head && \
+    uvicorn main:app --loop uvloop --workers ${WORKER_COUNT} --host 0.0.0.0 --port ${PORT}
