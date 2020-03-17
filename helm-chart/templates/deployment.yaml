@@ -1,3 +1,4 @@
+{{- $configSecretName := .Values.configSecretName -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,6 +28,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DUMMY_I_M_LAZY
+              value: nothing
+            {{- range .Values.secretEnvs }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $configSecretName }}
+                  key: {{ . }}
+            {{- end }}
+
           ports:
             - name: http
               containerPort: 5000

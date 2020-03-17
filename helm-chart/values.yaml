@@ -8,6 +8,11 @@ image:
   repository: covid19czbtt.azurecr.io/covid19cz-btt-wa
   pullPolicy: Always
 
+configSecretName: btwa
+secretEnvs:
+  - AZURE_STORAGE_CONNECTION_STRING
+  - DATABASE_URI
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
