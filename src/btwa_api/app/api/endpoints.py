@@ -31,14 +31,13 @@ def data(guid: str,
     if user is None:
         raise HTTPException(status_code=404, detail="User not found.")
 
+    directory = guid[0:2]
+    blob_file = "./data/" + directory + "/" + guid + ".json"
+
     connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     container_name = os.getenv("AZURE_STORAGE_CONTAINER")
 
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-
-    directory = guid[0:2]
-    blob_file = "./data/" + directory + "/" + guid + ".json"
-
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_file)
     blob_client.upload_blob(file.file, overwrite=True)
 
