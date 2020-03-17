@@ -1,5 +1,4 @@
 import os
-import random
 
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from fastapi.security import HTTPBasicCredentials
@@ -24,19 +23,21 @@ def register(guid: str,
 
 
 @router.post("/data")
-def data(file: UploadFile = File(...)):
-    # TODO: Check if the upload is allowed based on phone number
+def data(guid: str,
+         file: UploadFile = File(...),
+         db: Database = Depends(get_db)):
+    user = db.get_user_by_guid(guid)
 
-    # TODO: Check format of the file
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found.")
 
     connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     container_name = os.getenv("AZURE_STORAGE_CONTAINER")
 
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 
-    # TODO: generate name based on phone number fetched by check
-    directory = random.randrange(0, 9, 1)  # Ideally should be a prefix of phone number
-    blob_file = "./data/" + str(directory) + "/" + file.filename
+    directory = guid[0:2]
+    blob_file = "./data/" + directory + "/" + guid + ".json"
 
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_file)
     blob_client.upload_blob(file.file, overwrite=True)

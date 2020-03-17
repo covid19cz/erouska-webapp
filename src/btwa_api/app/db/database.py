@@ -24,3 +24,6 @@ class Database:
         if handler is not None:
             return handler.password
         return None
+
+    def get_user_by_guid(self, guid: str):
+        return self.session.query(User).filter_by(guid=guid).first()
