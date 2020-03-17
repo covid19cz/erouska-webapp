@@ -19,3 +19,5 @@ htmlcov/
 src/btwa_frontend/node_modules
 src/btwa_frontend/public/build
 src/btwa_frontend/public/trace
+
+.idea
