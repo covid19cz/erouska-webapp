@@ -4,11 +4,10 @@ from threading import RLock
 
 import firebase_admin
 from firebase_admin import firestore, storage
+from google.cloud.firestore_v1 import DocumentReference
 from starlette.requests import Request
 
 from ..config import FIREBASE_STORAGE_BUCKET
-
-UserEntry = namedtuple("UserEntry", ("uid", "buid", "phone"))
 
 
 class Firebase:
@@ -18,24 +17,29 @@ class Firebase:
         self.client = firestore.client()
         self.users = self.client.collection("users")
 
-    def get_user_by_phone(self, phone: str):
+    def get_user_by_phone(self, phone: str) -> DocumentReference:
         for doc in self.users.where("phone", "==", phone).stream():
-            uid = doc.get("fuid")
-            buid = doc.get("buid")
-            phone = doc.get("phone")
-            return UserEntry(uid=uid, buid=buid, phone=phone)
-
+            return doc
         return None
 
     def get_proximity_by_phone(self, phone: str):
         user = self.get_user_by_phone(phone)
         if user is None:
             return None
-        filepath = f"proximity/{user.uid}.json"
+        filepath = f"proximity/{user.get('uid')}.json"
         blob = self.bucket.get_blob(filepath)
         if blob is not None:
             return json.loads(blob.download_as_string())
         return None
+
+    def mark_as_infected(self, phone: str):
+        user = self.get_user_by_phone(phone)
+        if user is None:
+            return False
+        user.set({
+            "infected": True
+        })
+        return True
 
 
 FIREBASE_INSTANCE = None
