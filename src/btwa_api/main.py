@@ -32,7 +32,7 @@ async def db_session_middleware(request: Request, call_next):
 
 
 def webserver(module):
-    uvicorn.run(module, host="0.0.0.0", port=5000, log_level="info", reload=True)
+    uvicorn.run(module, host="0.0.0.0", port=5000, log_level="info")
 
 
 def serve():
