@@ -6,6 +6,8 @@ import urllib
 import sentry_sdk as sentry
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+
+import firebase_admin
 import statsd
 from pyhocon import ConfigFactory
 
@@ -38,3 +40,6 @@ sentry.add_breadcrumb(
 
 statsd = statsd.StatsClient(config.get_string("statsd.host"), 8125,
                             prefix=config.get_string("statsd.prefix"))
+
+# initialize Firebase, reads from GOOGLE_APPLICATION_CREDENTIALS
+firebase_admin.initialize_app()
