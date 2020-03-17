@@ -12,6 +12,7 @@ configSecretName: btwa
 secretEnvs:
   - AZURE_STORAGE_CONNECTION_STRING
   - DATABASE_URI
+  - SENTRY_DSN
 
 imagePullSecrets: []
 nameOverride: ""

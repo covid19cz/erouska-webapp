@@ -5,6 +5,8 @@ from btwa_api.app.api.endpoints import router as trace_router
 from btwa_api.app.api.frontend import router as frontend_router
 from btwa_api.app.api.healthcheck import router as healthcheck_router
 from btwa_api.app.db.session import Session
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+from btwa_api.app.config import sentry, statsd, logger
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.requests import Request
@@ -21,12 +23,30 @@ app.include_router(healthcheck_router)
 
 
 @app.middleware("http")
+async def monitoring_middleware(request: Request, call_next):
+    path = request.url.path
+    safe_path = path.lstrip("/").translate(str.maketrans("./", "-_"))
+    if safe_path == "":
+        safe_path = "_root_"
+
+    with sentry.configure_scope() as scope:
+        scope.set_extra("endpoint", path)
+
+        with statsd.timer("endpoints.%s" % safe_path):
+            response = await call_next(request)
+
+    request.state.db.close()
+    return response
+
+@app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
     request.state.db = Session()
     response = await call_next(request)
     request.state.db.close()
     return response
 
+
+app.add_middleware(SentryAsgiMiddleware)
 
 # app.add_middleware(HTTPSRedirectMiddleware) TODO
 
