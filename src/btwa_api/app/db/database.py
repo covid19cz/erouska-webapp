@@ -1,6 +1,8 @@
-from ..models.user import User
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+
+from ..models.handler import Handler
+from ..models.user import User
 
 
 class Database:
@@ -16,3 +18,9 @@ class Database:
             return True
         except IntegrityError:
             return False
+
+    def get_handler_hashed_password(self, username):
+        handler = self.session.query(Handler).filter_by(username=username).first()
+        if handler is not None:
+            return handler.password
+        return None
