@@ -31,7 +31,7 @@ def data(guid: str,
     if user is None:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    directory = guid[0:2]
+    directory = guid[-2:]
     blob_file = "./data/" + directory + "/" + guid + ".json"
 
     connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
