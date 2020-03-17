@@ -13,21 +13,24 @@ WORKDIR /usr/src/app/src/btwa_frontend
 RUN npm ci
 RUN npm run build
 
-FROM python:3.7-slim AS build_python
+FROM python:3.7-slim
 
 COPY . /usr/src/app
 COPY --from=build_js /usr/src/app/src/btwa_frontend/public /usr/src/app/src/btwa_frontend/public
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql17 build-essential
-
 WORKDIR /usr/src/app
 
-# just install deps
-RUN pip install .
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl gnupg2 && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql17 build-essential unixodbc && \
+    pip install . && \
+    dpkg -P unixodbc-dev build-essential && \
+    apt-get -y autoremove && \
+    apt-get -y clean && \
+    rm -rf /root/.cache /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app/src/btwa_api
 
