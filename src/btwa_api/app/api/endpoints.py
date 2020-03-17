@@ -42,4 +42,6 @@ def data(guid: str,
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_file)
     blob_client.upload_blob(file.file, overwrite=True)
 
+    # TODO: Handle errors
+
     return True
