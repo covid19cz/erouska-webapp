@@ -21,6 +21,17 @@ def get_proximity(phone: str,
         raise HTTPException(status_code=404)
     return proximity
 
+
+@router.post("/mark-infected/{phone}")
+def mark_infected(phone: str,
+                  credentials: HTTPBasicCredentials = Depends(security),
+                  firebase: Firebase = Depends(get_firebase),
+                  db: Database = Depends(get_db)):
+    check_handler_auth(db, credentials)
+    if not firebase.mark_as_infected(phone):
+        raise HTTPException(status_code=404)
+
+
 @router.post("/trace", response_class=JSONResponse)
 def trace():
     return {
