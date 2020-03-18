@@ -14,6 +14,12 @@ secretEnvs:
   - DATABASE_URI
   - SENTRY_DSN
 
+secretVolumes:
+  - btwa-gapps
+
+env:
+  GOOGLE_APPLICATION_CREDENTIALS: /etc/secrets/btwa-gapps/covid19cz-firebase-adminsdk-296p6-5813bb4cbe.json
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
