@@ -1,11 +1,21 @@
+from datetime import datetime, timedelta
+
+NO_OF_DAYS_TO_COUNT = 14
+
+
 def detect(input_data: list):
-    # TODO: Filter out data older than 14 days
+    date_n_days_ago = datetime.now() - timedelta(days=NO_OF_DAYS_TO_COUNT)
+    timestamp_ms_n_days_ago = date_n_days_ago.timestamp() * 1000
 
     scores = {}
     for data in input_data:
         current_timestamp = data["timestamp"]
         buid = data["buid"]
         signal = data["medRssi"]
+
+        # process only relevant data
+        if current_timestamp < timestamp_ms_n_days_ago:
+            continue
 
         # NEW MEETING
         if buid not in scores:
