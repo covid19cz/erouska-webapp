@@ -4,12 +4,12 @@ SCORE_DEDUCTION_ON_MEETING_BREAK = 3
 INFECTED_SCORE_TRESHOLD = 100
 
 
-def detect(input_data):
+def detect(input_data: list):
     scores = {}
     for data in input_data:
-        current_timestamp = data[0]
-        buid = data[1]
-        signal = data[5]  # median signal
+        current_timestamp = data["timestamp"]
+        buid = data["buid"]
+        signal = data["medRssi"]
 
         # NEW MEETING
         if buid not in scores:
@@ -72,12 +72,12 @@ def decide_infected(scores):
 
 # list of tuples (timestamp_ms, buid, expositionSeconds, maxRssi, avgRssi, medRssi)
 test_data = [
-    (1000, "foo", 1, 5, 15, 12),
-    (1000, "bar", 1, 5, 15, 12),
-    (1000, "baz", 1, 5, 15, 12),
-    (3000, "foo", 1, 5, 15, 12),
-    (3000, "bar", 1, 5, 15, 12),
-    (3000, "baz", 1, 5, 15, 12),
+    {"timestamp": 1000, "buid": "foo", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"timestamp": 1000, "buid": "bar", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"timestamp": 1000, "buid": "baz", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"timestamp": 1000, "buid": "foo", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"timestamp": 1000, "buid": "bar", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"timestamp": 1000, "buid": "baz", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
 ]
 
 infected = detect(test_data)
