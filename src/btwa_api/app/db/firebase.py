@@ -43,14 +43,21 @@ class Firebase:
 
     def get_user_by_phone(self, phone: str):
         for doc in self.users.where("phone", "==", phone).stream():
-            return doc.to_dict()
+            document = doc.to_dict()
+            document["fuid"] = doc.id
+            return document
         return None
 
     def get_user_by_fuid(self, fuid: str):
         return self.users.document(fuid).get().to_dict()
 
     def get_proximity(self, fuid: str):
-        return get_user_proximity(self.bucket, fuid)
+        proximity = get_user_proximity(self.bucket, fuid)
+        buids = list(set(record["buid"] for record in proximity))
+        nearby_users = {user["buid"]: user for user in get_users_batched(self.users, buids)}
+        for record in proximity:
+            record["user"] = nearby_users[record["buid"]]
+        return proximity
 
     def mark_as_infected(self, fuid: str, is_infected: bool):
         doc = self.users.document(fuid)
