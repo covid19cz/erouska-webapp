@@ -42,7 +42,7 @@ class Firebase:
         self.users = self.client.collection("users")
 
     def get_user_by_phone(self, phone: str):
-        for doc in self.users.where("phone", "==", phone).stream():
+        for doc in self.users.where("phoneNumber", "==", phone).stream():
             document = doc.to_dict()
             document["fuid"] = doc.id
             return document
