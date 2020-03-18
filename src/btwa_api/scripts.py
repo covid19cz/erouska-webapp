@@ -1,6 +1,6 @@
 import bcrypt
-from app.db.session import Session
-from app.models.handler import Handler
+from app.db.sql.models.handler import Handler
+from app.db.sql.session import Session
 
 
 def add_handler(username, password):

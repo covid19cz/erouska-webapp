@@ -1,11 +1,9 @@
 import pathlib
+import sys
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-import sys
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,8 +22,10 @@ APP_PATH = pathlib.Path(__file__).absolute().parent.parent
 sys.path.insert(0, str(APP_PATH))
 
 from app.config import DATABASE_URI  # noqa
-from app.db.base import Base  # noqa
+from app.db.sql import Base  # noqa
+
 target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

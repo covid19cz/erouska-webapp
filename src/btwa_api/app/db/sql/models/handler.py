@@ -1,6 +1,6 @@
 from sqlalchemy import Binary, Column, Integer, String
 
-from ..db.base_class import Base
+from ..base_class import Base
 
 
 class Handler(Base):
