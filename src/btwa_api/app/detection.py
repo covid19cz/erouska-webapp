@@ -19,6 +19,10 @@ def detect(input_data: list):
             }
             continue
 
+        # When already infected, skip all future occurrences
+        if scores[buid]["score"] >= INFECTED_SCORE_TRESHOLD:
+            continue
+
         # ALREADY MET
         # meeting was broken, counting from 0
         if current_timestamp - scores[buid]["last_timestamp"] > BREAK_MEETING_TRESHOLD:
