@@ -50,7 +50,7 @@ def get_proximity(fuid: str,
         start=r["timestampStart"],
         end=r["timestampEnd"],
         infected=r["user"]["infected"],
-        phone=r["user"]["phone"]
+        phone=r["user"]["phoneNumber"]
     ) for r in records]
 
 
