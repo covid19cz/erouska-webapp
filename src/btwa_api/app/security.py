@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from starlette import status
 
-from .db.database import Database
+from .db.sql.database import Database
 
 security = HTTPBasic()
 

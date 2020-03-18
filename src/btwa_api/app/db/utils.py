@@ -1,6 +1,6 @@
 from starlette.requests import Request
 
-from .database import Database
+from .sql.database import Database
 
 
 def get_db(request: Request) -> Database:

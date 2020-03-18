@@ -5,7 +5,7 @@ from btwa_api.app.api.endpoints import router as trace_router
 from btwa_api.app.api.frontend import router as frontend_router
 from btwa_api.app.api.healthcheck import router as healthcheck_router
 from btwa_api.app.config import sentry, statsd
-from btwa_api.app.db.session import Session
+from btwa_api.app.db.sql.session import Session
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware

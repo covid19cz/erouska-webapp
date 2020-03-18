@@ -6,7 +6,7 @@ import firebase_admin
 from firebase_admin import firestore, storage
 from starlette.requests import Request
 
-from ..config import FIREBASE_STORAGE_BUCKET
+from ...config import FIREBASE_STORAGE_BUCKET
 
 MAX_IN_QUERY_LENGTH = 10
 

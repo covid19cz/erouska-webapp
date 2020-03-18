@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from ..models.handler import Handler
+from .models.handler import Handler
 
 
 class Database:

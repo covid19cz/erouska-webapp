@@ -5,8 +5,8 @@ from fastapi.security import HTTPBasicCredentials
 from pydantic import BaseModel
 
 from .utils import get_or_404
-from ..db.database import Database
-from ..db.firebase import Firebase, get_firebase
+from ..db.firebase.firebase import Firebase, get_firebase
+from ..db.sql.database import Database
 from ..db.utils import get_db
 from ..security import check_handler_auth, security
 
