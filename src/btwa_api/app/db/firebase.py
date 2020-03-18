@@ -19,9 +19,8 @@ def get_users_batched(collection, ids):
     return users
 
 
-def get_user_proximity(bucket, user):
-    uid = user['fuid']
-    files = sorted(bucket.list_blobs(prefix=f"proximity/{uid}/",
+def get_user_proximity(bucket, fuid: str):
+    files = sorted(bucket.list_blobs(prefix=f"proximity/{fuid}/",
                                      fields="items(name)",
                                      max_results=100),
                    key=lambda b: b.name,
@@ -47,18 +46,18 @@ class Firebase:
             return doc.to_dict()
         return None
 
-    def get_proximity_by_phone(self, phone: str):
-        user = self.get_user_by_phone(phone)
-        if user is None:
-            return None
-        return get_user_proximity(self.bucket, user)
+    def get_user_by_fuid(self, fuid: str):
+        return self.users.document(fuid).get().to_dict()
 
-    def mark_as_infected(self, phone: str):
-        user = self.get_user_by_phone(phone)
-        if user is None:
+    def get_proximity(self, fuid: str):
+        return get_user_proximity(self.bucket, fuid)
+
+    def mark_as_infected(self, fuid: str, is_infected: bool):
+        doc = self.users.document(fuid)
+        if not doc.get().exists:
             return False
-        user.set({
-            "infected": True
+        doc.set({
+            "infected": is_infected
         })
         return True
 

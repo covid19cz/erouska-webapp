@@ -3,12 +3,12 @@ import os
 import pathlib
 import sys
 import urllib
-import sentry_sdk as sentry
-from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
-from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 
+import sentry_sdk as sentry
 import statsd
 from pyhocon import ConfigFactory
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 ROOT_DIR = pathlib.Path(__file__).absolute().parent.parent
 
@@ -41,7 +41,8 @@ sentry.add_breadcrumb(
     sentry_debug=config.get_bool("sentry.debug"),
     root_dir=ROOT_DIR,
     database_uri=DATABASE_URI,
-    statsd='%s:%d/%s' % (config.get_string("statsd.host"), 8125, config.get_string("statsd.prefix"))
+    statsd='%s:%d/%s' % (
+        config.get_string("statsd.host"), 8125, config.get_string("statsd.prefix"))
 )
 
 statsd = statsd.StatsClient(config.get_string("statsd.host"), 8125,
