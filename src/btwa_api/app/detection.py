@@ -19,15 +19,15 @@ def detect(csv_rows: list, now: datetime):
 
         score = scores.get(buid)
 
-        # NEW MEETING
         if score is None:
+            # new meeting
             score = {
                 "buid": buid,
                 "score": get_score(signal),
                 "last_timestamp": current_timestamp
             }
         else:
-            # add score and update last timestamp
+            # already met - add score and update last timestamp
             score["score"] += get_score(signal)
             score["last_timestamp"] = current_timestamp
 
