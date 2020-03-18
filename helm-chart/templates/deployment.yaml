@@ -29,8 +29,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: DUMMY_I_M_LAZY
-              value: nothing
+            {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $val }}
+            {{- end }}
             {{- range .Values.secretEnvs }}
             - name: {{ . }}
               valueFrom:
@@ -39,6 +41,12 @@ spec:
                   key: {{ . }}
             {{- end }}
 
+          volumeMounts:
+          {{- range .Values.secretVolumes}}
+            - name: {{ . }}
+              mountPath: "/etc/secrets/{{ . }}"
+              readOnly: true
+          {{- end }}
           ports:
             - name: http
               containerPort: 5000
@@ -53,6 +61,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        {{- range .Values.secretVolumes }}
+        - name: {{ . }}
+          secret:
+            secretName: {{ . }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
