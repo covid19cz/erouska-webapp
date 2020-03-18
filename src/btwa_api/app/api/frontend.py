@@ -11,5 +11,6 @@ SRC_DIR = pathlib.Path(__file__).absolute().parent.parent.parent.parent
 
 @router.get("/", response_class=HTMLResponse)
 async def index():
+    """Return HTML file with the frontend application"""
     async with aiofiles.open(SRC_DIR / "btwa_frontend" / "public" / "index.html") as file:
         return await file.read()
