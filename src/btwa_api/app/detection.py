@@ -32,11 +32,12 @@ def detect(input_data: list):
             }
             continue
 
+        # WAS DECIDED NOT TO IMPLEMENT DEDUCTION FOR NOW
         # every 2 minutes they were apart, reduce score by 3
-        i = scores[buid]["last_timestamp"] + SCAN_PERIOD
-        while i < current_timestamp:
-            scores[buid]["score"] = max(0, scores[buid]["score"] - SCORE_DEDUCTION_ON_MEETING_BREAK)
-            i += SCAN_PERIOD
+        # i = scores[buid]["last_timestamp"] + SCAN_PERIOD
+        # while i < current_timestamp:
+        #     scores[buid]["score"] = max(0, scores[buid]["score"] - SCORE_DEDUCTION_ON_MEETING_BREAK)
+        #     i += SCAN_PERIOD
 
         # add score and update last timestamp
         scores[buid]["score"] += get_score(signal)
