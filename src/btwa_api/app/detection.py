@@ -3,32 +3,35 @@ from datetime import datetime, timedelta
 NO_OF_DAYS_TO_COUNT = 14
 
 
-def detect(input_data: list):
-    date_n_days_ago = datetime.now() - timedelta(days=NO_OF_DAYS_TO_COUNT)
+def detect(csv_rows: list, now: datetime):
+    date_n_days_ago = now - timedelta(days=NO_OF_DAYS_TO_COUNT)
     timestamp_ms_n_days_ago = date_n_days_ago.timestamp() * 1000
 
     scores = {}
-    for data in input_data:
-        current_timestamp = data["timestamp"]
-        buid = data["buid"]
-        signal = data["medRssi"]
+    for row in csv_rows:
+        current_timestamp = row["timestamp"]
+        buid = row["buid"]
+        signal = row["medRssi"]
 
         # process only relevant data
         if current_timestamp < timestamp_ms_n_days_ago:
             continue
 
+        score = scores.get(buid)
+
         # NEW MEETING
-        if buid not in scores:
-            scores[buid] = {
+        if score is None:
+            score = {
                 "buid": buid,
                 "score": get_score(signal),
                 "last_timestamp": current_timestamp
             }
-            continue
+        else:
+            # add score and update last timestamp
+            score["score"] += get_score(signal)
+            score["last_timestamp"] = current_timestamp
 
-        # add score and update last timestamp
-        scores[buid]["score"] += get_score(signal)
-        scores[buid]["last_timestamp"] = current_timestamp
+        scores[buid] = score
 
     return scores
 
@@ -62,5 +65,5 @@ test_data = [
     {"timestamp": 1000, "buid": "baz", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
 ]
 
-infected = detect(test_data)
+infected = detect(test_data, datetime.now())
 print(infected)
