@@ -1,5 +1,4 @@
 import json
-from collections import namedtuple
 from threading import RLock
 
 import firebase_admin
@@ -8,6 +7,16 @@ from google.cloud.firestore_v1 import DocumentReference
 from starlette.requests import Request
 
 from ..config import FIREBASE_STORAGE_BUCKET
+
+MAX_IN_QUERY_LENGTH = 10
+
+
+def get_users_batched(collection, ids):
+    users = []
+    for start in range(0, len(ids), MAX_IN_QUERY_LENGTH):
+        subset = ids[start:start + MAX_IN_QUERY_LENGTH]
+        users.extend(d.to_dict() for d in collection.where("buid", "in", subset).get())
+    return users
 
 
 class Firebase:
