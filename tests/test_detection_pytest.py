@@ -39,11 +39,15 @@ def test_detect():
     TWO_DAY = 2
     THREE_DAY = 3
     FOR_DAY = 4
+    THIRTEEN_DAY = 13
+    FIFTEEN_DAY = 15
 
     date_n_days_ago = datetime.now() - timedelta(days=ONE_DAY)
     timestamp_ms_n_one_day_ago = date_n_days_ago.timestamp() * 1000
     date_n_days_ago2 = datetime.now() - timedelta(days=TWO_DAY)
-    timestamp_ms_n_one_day_ago2 = date_n_days_ago.timestamp() * 1000
+    timestamp_ms_n_one_day_ago2 = date_n_days_ago2.timestamp() * 1000
+    date_no_days_to_count = datetime.now() - timedelta(days=FIFTEEN_DAY)
+    timestamp_date_no_days_to_count = date_no_days_to_count.timestamp() * 1000
 
     # bad data, timestamp is in the past
     bad_data = [
@@ -51,7 +55,7 @@ def test_detect():
     ]
     scores_bad_data = {}
 
-    # good data
+    # good data, he met one person
     good_data = [
         {"buid": "foo", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
          "medRssi": 12},
@@ -59,7 +63,7 @@ def test_detect():
 
     scores_good_data = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 35}}
 
-    # good data
+    # good data, he met one person twice
     good_data2 = [
         {"buid": "foo", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
          "medRssi": 12},
@@ -67,10 +71,24 @@ def test_detect():
          "medRssi": 70},
     ]
 
+    # good data, he met two person twice
     good_data3 = [
         {"buid": "foo", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
          "medRssi": 12},
-        {"buid": "foo", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+        {"buid": "foo", "timestampStart": timestamp_ms_n_one_day_ago2, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+         "medRssi": 90},
+        {"buid": "baz", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+         "medRssi": 80},
+        {"buid": "baz", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+         "medRssi": 77},
+    ]
+
+    # good data, he met one person twice and one person also twice but once FIFTEEN_DAY ago
+    good_data4 = [
+        {"buid": "foo", "timestampStart": timestamp_date_no_days_to_count, "timestampEnd": 1, "maxRssi": 5,
+         "avgRssi": 15,
+         "medRssi": 12},
+        {"buid": "foo", "timestampStart": timestamp_ms_n_one_day_ago2, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
          "medRssi": 90},
         {"buid": "baz", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
          "medRssi": 80},
@@ -82,17 +100,14 @@ def test_detect():
 
     scores_good_data2 = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 70}}
 
-    scores_good_data3= {'baz': {'buid': 'baz', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 34},
-                        'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 40}}
+    scores_good_data3 = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago2, 'score': 40},
+                         'baz': {'buid': 'baz', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 34}}
+
+    scores_good_data4 = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago2, 'score': 5},
+                         'baz': {'buid': 'baz', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 34}}
 
     assert detect(bad_data, datetime.now()) == scores_bad_data
     assert detect(good_data, datetime.now()) == scores_good_data
     assert detect(good_data2, datetime.now()) == scores_good_data2
     assert detect(good_data3, datetime.now()) == scores_good_data3
-
-    # good data, timestamp is in the past
-
-    # scores_good_data2 = {'bar': {'buid': 'bar', 'last_timestamp': timestamp_ms_n_one_day_ago2, 'score': 35},
-    #                      'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago2, 'score': 25}}
-
-    # scores_good_data2 = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 70}}
+    assert detect(good_data4, datetime.now()) == scores_good_data4
