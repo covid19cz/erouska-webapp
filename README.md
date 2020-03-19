@@ -43,15 +43,22 @@ covid19-btwa
 
 #### DB initialization
 
-- Create backend user: use `src/btwa_api/scripts.py:add_handler`
+- Initialize database
+```bash
+$ cd src/btwa_api
+$ alembic upgrade head
+```
+- Create backend user: use `src/btwa_api/scripts.py:add_handler` to add a new user
 
 #### Running manually:
 ```bash
 # run with default worker
-$ cd src/btwa_api && python main.py
+$ cd src/btwa_api
+$ python main.py
 
 # run with uvicorn
-$ cd src/btwa_api && uvicorn main:app
+$ cd src/btwa_api
+$ uvicorn main:app
 ```
 
 When the app is running, just [open it in your web browser](http://localhost:8080).
