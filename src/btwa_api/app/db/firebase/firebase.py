@@ -9,6 +9,7 @@ from starlette.requests import Request
 from ...config import FIREBASE_STORAGE_BUCKET
 
 MAX_IN_QUERY_LENGTH = 10
+ALLOWED_USER_STATUSES = {"unknown", "infected", "cured"}
 
 
 def get_users_batched(collection, ids):
@@ -59,12 +60,14 @@ class Firebase:
             record["user"] = nearby_users[record["buid"]]
         return proximity
 
-    def mark_as_infected(self, fuid: str, is_infected: bool):
+    def change_user_status(self, fuid: str, status: str):
+        assert status in ALLOWED_USER_STATUSES
+
         doc = self.users.document(fuid)
         if not doc.get().exists:
             return False
         doc.set({
-            "infected": is_infected
+            "status": status
         })
         return True
 

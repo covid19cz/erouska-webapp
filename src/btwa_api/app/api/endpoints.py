@@ -15,7 +15,7 @@ router = APIRouter()
 
 class User(BaseModel):
     fuid: str
-    infected: bool
+    status: str
 
 
 @router.get("/get-user/{phone}", response_model=User)
@@ -26,14 +26,14 @@ def get_user(phone: str,
     """Find user by his phone number."""
     check_handler_auth(db, credentials)
     user = get_or_404(firebase.get_user_by_phone(phone))
-    return User(fuid=user["fuid"], infected=user["infected"])
+    return User(fuid=user["fuid"], status=user["status"])
 
 
 class ProximityRecord(BaseModel):
     buid: str
     start: int
     end: int
-    infected: bool
+    status: str
     phone: str
 
 
@@ -49,22 +49,22 @@ def get_proximity(fuid: str,
         buid=r["buid"],
         start=r["timestampStart"],
         end=r["timestampEnd"],
-        infected=r["user"]["infected"],
+        status=r["user"]["status"],
         phone=r["user"]["phoneNumber"]
     ) for r in records]
 
 
-class InfectedStatus(BaseModel):
-    infected: bool
+class UserStatus(BaseModel):
+    status: str
 
 
-@router.post("/mark-infected/{fuid}")
-def mark_infected(fuid: str,
-                  status: InfectedStatus,
-                  credentials: HTTPBasicCredentials = Depends(security),
-                  firebase: Firebase = Depends(get_firebase),
-                  db: Database = Depends(get_db)):
+@router.post("/change-user-status/{fuid}")
+def change_user_status(fuid: str,
+                       status: UserStatus,
+                       credentials: HTTPBasicCredentials = Depends(security),
+                       firebase: Firebase = Depends(get_firebase),
+                       db: Database = Depends(get_db)):
     """Change the infected status of a user"""
     check_handler_auth(db, credentials)
-    if not firebase.mark_as_infected(fuid, status.infected):
+    if not firebase.change_user_status(fuid, status.status):
         raise HTTPException(status_code=404)
