@@ -2,11 +2,11 @@ import getpass
 
 import bcrypt
 import click
-from app.db.sql.models.handler import Handler
-from app.db.sql.session import Session
+from btwa_api.app.db.sql.models.handler import Handler
+from btwa_api.app.db.sql.session import Session
 
 
-def add_handler(username, password):
+def add_user(username, password):
     session = Session()
     handler = Handler(username=username,
                       password=bcrypt.hashpw(password.encode(), bcrypt.gensalt()))
@@ -15,10 +15,10 @@ def add_handler(username, password):
     session.close()
 
 
-@click.command("add-handler")
+@click.command("add-user")
 @click.argument("username")
-def add_handler_cmd(username):
-    add_handler(username, getpass.getpass())
+def add_user_cmd(username):
+    add_user(username, getpass.getpass())
 
 
 @click.group()
@@ -27,5 +27,5 @@ def cli():
 
 
 if __name__ == "__main__":
-    cli.add_command(add_handler_cmd)
+    cli.add_command(add_user_cmd)
     cli()
