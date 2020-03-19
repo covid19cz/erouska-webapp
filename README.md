@@ -33,14 +33,19 @@ pip install -e .
 covid19-btwa
 ```
 
-#### Environment variables for backend:
+### Backend configuration
+#### Environment variables:
 
 - **GOOGLE_APPLICATION_CREDENTIALS**: Path to Firebase Admin JSON credentials
 - **FIREBASE_DB_URL**: URL of Firestore database
 - **FIREBASE_STORAGE_BUCKET**: URL of Cloud Storage bucket
 - **DATABASE_URI** (optional): Connection string for SQL database (if unset, defaults to SQLite)  
 
-#### Running backend manually:
+#### DB initialization
+
+- Create backend user: use `src/btwa_api/scripts.py:add_handler`
+
+#### Running manually:
 ```bash
 # run with default worker
 $ cd src/btwa_api && python main.py
