@@ -96,6 +96,19 @@ def test_detect():
          "medRssi": 77},
     ]
 
+    # good data, he met one person twice and one person also twice but twice FIFTEEN_DAY ago
+    good_data5 = [
+        {"buid": "foo", "timestampStart": timestamp_date_no_days_to_count, "timestampEnd": 1, "maxRssi": 5,
+         "avgRssi": 15,
+         "medRssi": 12},
+        {"buid": "foo", "timestampStart": timestamp_date_no_days_to_count, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+         "medRssi": 90},
+        {"buid": "baz", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+         "medRssi": 80},
+        {"buid": "baz", "timestampStart": timestamp_ms_n_one_day_ago, "timestampEnd": 1, "maxRssi": 5, "avgRssi": 15,
+         "medRssi": 77},
+    ]
+
     scores_good_data = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 35}}
 
     scores_good_data2 = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 70}}
@@ -106,8 +119,11 @@ def test_detect():
     scores_good_data4 = {'foo': {'buid': 'foo', 'last_timestamp': timestamp_ms_n_one_day_ago2, 'score': 5},
                          'baz': {'buid': 'baz', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 34}}
 
+    scores_good_data5 = {'baz': {'buid': 'baz', 'last_timestamp': timestamp_ms_n_one_day_ago, 'score': 34}}
+
     assert detect(bad_data, datetime.now()) == scores_bad_data
     assert detect(good_data, datetime.now()) == scores_good_data
     assert detect(good_data2, datetime.now()) == scores_good_data2
     assert detect(good_data3, datetime.now()) == scores_good_data3
     assert detect(good_data4, datetime.now()) == scores_good_data4
+    assert detect(good_data5, datetime.now()) == scores_good_data5
