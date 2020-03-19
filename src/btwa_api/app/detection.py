@@ -9,7 +9,7 @@ def detect(csv_rows: list, now: datetime):
 
     scores = {}
     for row in csv_rows:
-        current_timestamp = row["timestamp"]
+        current_timestamp = row["timestampStart"]
         buid = row["buid"]
         signal = row["medRssi"]
 
@@ -55,14 +55,14 @@ def get_score(signal):
     return 0
 
 
-# list of tuples (timestamp_ms, buid, expositionSeconds, maxRssi, avgRssi, medRssi)
+# list of tuples (buid, timestampStart, timestampEnd, minRssi, maxRssi, avgRssi, medRssi)
 test_data = [
-    {"timestamp": 1000, "buid": "foo", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"timestamp": 1000, "buid": "bar", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"timestamp": 1000, "buid": "baz", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"timestamp": 1000, "buid": "foo", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"timestamp": 1000, "buid": "bar", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"timestamp": 1000, "buid": "baz", "expositionSeconds": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"buid": "foo", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"buid": "bar", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"buid": "baz", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"buid": "foo", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"buid": "bar", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
+    {"buid": "baz", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
 ]
 
 infected = detect(test_data, datetime.now())
