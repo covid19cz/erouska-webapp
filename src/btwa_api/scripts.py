@@ -1,3 +1,5 @@
+import getpass
+
 import bcrypt
 import click
 from app.db.sql.models.handler import Handler
@@ -15,9 +17,8 @@ def add_handler(username, password):
 
 @click.command("add-handler")
 @click.argument("username")
-@click.argument("password")
-def add_handler_cmd(username, password):
-    add_handler(username, password)
+def add_handler_cmd(username):
+    add_handler(username, getpass.getpass())
 
 
 @click.group()
