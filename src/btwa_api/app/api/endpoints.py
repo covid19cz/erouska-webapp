@@ -13,19 +13,23 @@ from ..security import check_handler_auth, security
 router = APIRouter()
 
 
+class UserLookup(BaseModel):
+    phone: str
+
+
 class User(BaseModel):
     fuid: str
     status: str
 
 
-@router.get("/get-user/{phone}", response_model=User)
-def get_user(phone: str,
+@router.post("/get-user", response_model=User)
+def get_user(lookup: UserLookup,
              credentials: HTTPBasicCredentials = Depends(security),
              firebase: Firebase = Depends(get_firebase),
              db: Database = Depends(get_db)):
     """Find user by his phone number."""
     check_handler_auth(db, credentials)
-    user = get_or_404(firebase.get_user_by_phone(phone))
+    user = get_or_404(firebase.get_user_by_phone(lookup.phone))
     return User(fuid=user["fuid"], status=user["status"])
 
 

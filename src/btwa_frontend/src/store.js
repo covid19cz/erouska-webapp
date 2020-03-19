@@ -78,8 +78,9 @@ export function getUser (phone) {
 
   error.set(null);
 
-  return fetch(SERVER + GET_USER.replace('{phone}', phone), {
-    method: 'GET',
+  return fetch(SERVER + GET_USER, {
+    method: 'POST',
+    body: JSON.stringify({ phone }),
     credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json'

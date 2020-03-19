@@ -8,6 +8,6 @@
   "SERVER" : "",
   "GET_PHONE_NUMBERS" : "trace",
   "CHANGE_USER_STATUS" : "/change-user-status/{fuid}",
-  "GET_USER" :  "/get-user/{phone}",
+  "GET_USER" :  "/get-user",
   "GET_PROXIMITY" :  "/proximity/{fuid}"
 }
