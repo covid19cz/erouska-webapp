@@ -47,8 +47,8 @@ covid19-btwa
 ```bash
 $ cd src/btwa_api
 $ alembic upgrade head
+$ python scripts.py add-handler user pass
 ```
-- Create backend user: use `src/btwa_api/scripts.py:add_handler` to add a new user
 
 #### Running manually:
 ```bash
