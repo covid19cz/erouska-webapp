@@ -4,6 +4,10 @@
   "ENCOUNTER_TO" : "Encounter_to",
   "ENCOUNTER_ID" : "Encounter_BT_id",
   "PHONE_NUMBER" : "Phone_Number",
+  "INFECTED" : "Infected",
   "SERVER" : "",
-  "GET_PHONE_NUMBERS" : "trace"
+  "GET_PHONE_NUMBERS" : "trace",
+  "CHANGE_USER_STATUS" : "/change-user-status/{fuid}",
+  "GET_USER" :  "/get-user/{phone}",
+  "GET_PROXIMITY" :  "/proximity/{fuid}"
 }

@@ -8,18 +8,30 @@ import {
   ENCOUNTER_TO,
   ENCOUNTER_FROM,
   ENCOUNTER_ID,
+  INFECTED,
   DURATION,
   SERVER,
   GET_PHONE_NUMBERS,
-  PHONE_NUMBER
+  PHONE_NUMBER,
+  CHANGE_USER_STATUS,
+  GET_USER,
+  GET_PROXIMITY
 } from '../CONFIG.json';
 
 
-export const contacts = writable(null);
+export const patient = writable(null);
 
+export const fileContents = writable(null);
+
+export const phones = writable(null);
+
+export const error = writable(null);
+
+
+/*
 
 // contacts with all phone numbers fetched
-export const phones = derived(contacts, async (contacts, set) => {
+export const phones = derived(fileContents, async (contacts, set) => {
   if (!contacts) return null;
 
   const ids = contacts.map(c => c[ENCOUNTER_ID]);
@@ -44,4 +56,63 @@ export const phones = derived(contacts, async (contacts, set) => {
       }));
     });
 
-}, null);
+}, null);*/
+
+
+export function changeStatus (fuid, status) {
+
+  error.set(null);
+
+  return fetch(SERVER + CHANGE_USER_STATUS.replace('{fuid}', fuid), {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status })
+  });
+}
+
+
+export function getUser (phone) {
+
+  error.set(null);
+
+  return fetch(SERVER + GET_USER.replace('{phone}', phone), {
+    method: 'GET',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(user => {
+
+      patient.set(Object.assign({ phone }, user));
+
+      return fetch(SERVER + GET_PROXIMITY.replace('{fuid}', user.fuid),{
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+
+          phones.set(data.map(d => {
+            let c= {}
+            c[ENCOUNTER_FROM] = d.start;
+            c[ENCOUNTER_TO]= d.end;
+            c[DURATION] = d.end - d.start;
+            c[INFECTED] = d.infected;
+            c[PHONE_NUMBER] = d.phone;
+            return c;
+          }));
+        });
+    })
+    .catch(e => {
+      error.set(e);
+    });
+}
