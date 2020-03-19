@@ -85,9 +85,15 @@ export function getUser (phone) {
       'Content-Type': 'application/json'
     }
   })
+    .then(response => {
+      if (response.status !== 200) {
+          throw new Error('Error processing request');
+      } else {
+        return response;
+      }
+    })
     .then(response => response.json())
     .then(user => {
-
       patient.set(Object.assign({ phone }, user));
 
       return fetch(SERVER + GET_PROXIMITY.replace('{fuid}', user.fuid),{
@@ -97,10 +103,15 @@ export function getUser (phone) {
           'Content-Type': 'application/json'
         }
       })
+        .then(response => {
+          if (response.status !== 200) {
+              throw new Error('Error processing request');
+          } else {
+            return response;
+          }
+        })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
-
           phones.set(data.map(d => {
             let c= {}
             c[ENCOUNTER_FROM] = d.start;
@@ -114,5 +125,6 @@ export function getUser (phone) {
     })
     .catch(e => {
       error.set(e);
+      throw new Error('no data fetched');
     });
 }
