@@ -29,8 +29,24 @@ cd src/btwa_frontend \
     && npm run build \
     && cd ../..
 
-pip install .
+pip install -e .
 covid19-btwa
+```
+
+#### Environment variables for backend:
+
+- **GOOGLE_APPLICATION_CREDENTIALS**: Path to Firebase Admin JSON credentials
+- **FIREBASE_DB_URL**: URL of Firestore database
+- **FIREBASE_STORAGE_BUCKET**: URL of Cloud Storage bucket
+- **DATABASE_URI** (optional): Connection string for SQL database (if unset, defaults to SQLite)  
+
+#### Running backend manually:
+```bash
+# run with default worker
+$ cd src/btwa_api && python main.py
+
+# run with uvicorn
+$ cd src/btwa_api && uvicorn main:app
 ```
 
 When the app is running, just [open it in your web browser](http://localhost:8080).
