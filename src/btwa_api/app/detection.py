@@ -53,17 +53,3 @@ def get_score(signal):
         return 5
 
     return 0
-
-
-# list of tuples (buid, timestampStart, timestampEnd, minRssi, maxRssi, avgRssi, medRssi)
-test_data = [
-    {"buid": "foo", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"buid": "bar", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"buid": "baz", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"buid": "foo", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"buid": "bar", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-    {"buid": "baz", "timestampStart": 1000, "timestampEnd": 1200, "minRssi": 1, "maxRssi": 5, "avgRssi": 15, "medRssi": 12},
-]
-
-infected = detect(test_data, datetime.now())
-print(infected)
