@@ -32,7 +32,7 @@ def get_user_proximity(bucket, fuid: str):
     most_recent = files[0]
     content = most_recent.download_as_string()
     reader = csv.DictReader(StringIO(content.decode()))
-    return sorted(reader, key=lambda record: record["timestamp"])
+    return sorted(reader, key=lambda record: record["timestampStart"])
 
 
 class Firebase:
