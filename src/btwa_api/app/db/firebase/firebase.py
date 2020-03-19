@@ -66,7 +66,7 @@ class Firebase:
         doc = self.users.document(fuid)
         if not doc.get().exists:
             return False
-        doc.set({
+        doc.update({
             "status": status
         })
         return True
