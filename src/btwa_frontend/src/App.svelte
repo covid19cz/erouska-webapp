@@ -42,7 +42,7 @@ function search() {
         <div class="error">{$error}</div>
         {/if}
         <input class="search" type="text" bind:value={searchNumber} placeholder="Phone number" /><br/>
-        <button class="button" on:click="{search}">Seach</button>
+        <button class="button" on:click="{search}">Search</button>
       </aside>
     </div>
   {/if}
