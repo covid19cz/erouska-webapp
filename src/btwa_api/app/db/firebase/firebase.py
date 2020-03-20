@@ -22,9 +22,9 @@ def get_users_batched(collection, ids):
 
 def get_user_proximity(bucket, fuid: str):
     files = sorted(bucket.list_blobs(prefix=f"proximity/{fuid}/",
-                                     fields="items(name)",
+                                     fields="items(name, timeCreated)",
                                      max_results=100),
-                   key=lambda b: b.name,
+                   key=lambda b: b.time_created,
                    reverse=True)
     files = [f for f in files if f.name.endswith(".csv")]
     if not files:
