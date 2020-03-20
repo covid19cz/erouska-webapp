@@ -88,7 +88,7 @@ function applyFilter(data, minDuration, minTime) {
 
 <div class="person">
   Contact history for {$patient.phone}
-  <span class="status {$patient.status}">{$patient.status}</span>
+  <strong class="status {$patient.status}">{$patient.status}</strong>
   {#if $patient.status == 'infected'}
     <button class="button" on:click={() => changeStatus($patient.fuid, 'cured')}>Mark as Cured</button>
   {:else}
@@ -207,9 +207,10 @@ function applyFilter(data, minDuration, minTime) {
   .filters > div.active {
     box-shadow: 10px 10px 10px 0 rgba(0,0,0,.1);
   }
-  .stats {
-    padding: .5rem 1rem;
+  .status {
+    padding: .2rem 1rem;
     display: inline-block;
+
   }
   .infected {
     background: #F00;
@@ -218,7 +219,7 @@ function applyFilter(data, minDuration, minTime) {
   .actions {
   }
   .timeline-indicator {
-    margin-top: -.6rem;
+    margin-top: -1rem;
     position: absolute;
     height: .3rem;
     min-width: 1%;

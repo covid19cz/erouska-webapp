@@ -86,13 +86,13 @@ export function getUser (phone) {
       'Content-Type': 'application/json'
     }
   })
-    .then(response => {
-      if (response.status !== 200) {
-          throw new Error('Error processing request');
-      } else {
-        return response;
-      }
-    })
+  .then(response => {
+    if (response.status !== 200) {
+        throw new Error('phone number not found');
+    } else {
+      return response;
+    }
+  })
     .then(response => response.json())
     .then(user => {
       patient.set(Object.assign({ phone }, user));
@@ -106,7 +106,7 @@ export function getUser (phone) {
       })
         .then(response => {
           if (response.status !== 200) {
-              throw new Error('Error processing request');
+              throw new Error('fetching data for given phone number');
           } else {
             return response;
           }
@@ -126,6 +126,6 @@ export function getUser (phone) {
     })
     .catch(e => {
       error.set(e);
-      throw new Error('no data fetched');
+      throw new Error('during server request');
     });
 }
