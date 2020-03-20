@@ -1,6 +1,7 @@
-from ..config import DATABASE_URI
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
+
+from ...config import DATABASE_URI
 
 args = {}
 if DATABASE_URI.startswith("sqlite:///"):

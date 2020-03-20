@@ -4,11 +4,11 @@ import uvicorn
 from btwa_api.app.api.endpoints import router as trace_router
 from btwa_api.app.api.frontend import router as frontend_router
 from btwa_api.app.api.healthcheck import router as healthcheck_router
-from btwa_api.app.db.session import Session
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-from btwa_api.app.config import sentry, statsd, logger
+from btwa_api.app.config import sentry, statsd
+from btwa_api.app.db.sql.session import Session
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.requests import Request
 
 FILE_DIR = pathlib.Path(__file__).absolute().parent
@@ -32,11 +32,11 @@ async def monitoring_middleware(request: Request, call_next):
     with sentry.configure_scope() as scope:
         scope.set_extra("endpoint", path)
 
-        with statsd.timer("endpoints.%s" % safe_path):
+        with statsd.timer(f"endpoints.{safe_path}"):
             response = await call_next(request)
 
-    request.state.db.close()
     return response
+
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -47,8 +47,6 @@ async def db_session_middleware(request: Request, call_next):
 
 
 app.add_middleware(SentryAsgiMiddleware)
-
-# app.add_middleware(HTTPSRedirectMiddleware) TODO
 
 
 def webserver(module):

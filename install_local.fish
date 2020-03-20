@@ -3,5 +3,3 @@ cd bt-tracing-webapp
 
 python3 -m venv env
 . env/bin/activate.fish
-
-. compile.sh

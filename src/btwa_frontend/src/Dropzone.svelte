@@ -1,7 +1,7 @@
 <script>
 import { onMount, createEventDispatcher } from 'svelte';
 import importFile from './libs/importFile.js';
-import { contacts } from './store.js';
+import { fileContents} from './store.js';
 
 
 window.dragLocalOrigin = false;
@@ -14,7 +14,7 @@ let upload = null;
 
 function processFiles (transfer) {
   importFile(transfer.files)
-    .then(data => { contacts.set(data.json) });
+    .then(data => { fileContents.set(data.json) });
 }
 
 onMount(() => {

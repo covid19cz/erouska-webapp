@@ -3,9 +3,12 @@ import {
   ENCOUNTER_TO,
   ENCOUNTER_FROM,
   ENCOUNTER_ID,
+  INFECTED,
   DURATION,
   PHONE_NUMBER
 } from '../CONFIG.json';
+
+import { changeStatus, patient } from './store.js';
 
 import { scaleLinear } from 'd3';
 import dayjs from 'dayjs';
@@ -31,9 +34,9 @@ let timeDuration = null;
 
 $: d = applyFilter(data, durationFilter, timeFilter);
 
-
 // filter and calculate full ranges
 function applyFilter(data, minDuration, minTime) {
+
   let filtered = data;
   let dMin = 0;
   let dMax = 0;
@@ -59,21 +62,20 @@ function applyFilter(data, minDuration, minTime) {
 
   durationMax = dMax;
 
+  // scale for duration bar size
   durationScale = scaleLinear()
     .domain([dMin, dMax])
     .range([0,100]);
 
-  timeMax = (new Date).valueOf();
+  timeMax = (new Date).valueOf(); // set today by default
   timeMin = tMin;
 
+  // scale for timeline start
   timeScale = scaleLinear()
     .domain([tMin, tMax])
     .range([0,100]);
 
-  timeScale = scaleLinear()
-    .domain([tMin, tMax])
-    .range([0,100]);
-
+  // scale for timeline width
   timeDuration = scaleLinear()
     .domain([0, tMax-tMin])
     .range([0,100]);
@@ -81,7 +83,18 @@ function applyFilter(data, minDuration, minTime) {
   return filtered;
 }
 
+
 </script>
+
+<div class="person">
+  Contact history for {$patient.phone}
+  <strong class="status {$patient.status}">{$patient.status}</strong>
+  {#if $patient.status == 'infected'}
+    <button class="button" on:click={() => changeStatus($patient.fuid, 'cured')}>Mark as Cured</button>
+  {:else}
+    <button class="button" on:click={() => changeStatus($patient.fuid, 'infected')}>Mark as Infected</button>
+  {/if}
+</div>
 
 <div class="filters">
   <div class:active={durationFilter > 0}>
@@ -91,6 +104,7 @@ function applyFilter(data, minDuration, minTime) {
     <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter = e.detail} />
   </div>
 </div>
+
 <div class="scroll">
 {#if d && d.length > 0}
   <table class="table">
@@ -129,7 +143,8 @@ function applyFilter(data, minDuration, minTime) {
                 <div class="duration-scale" style="width: {durationScale(item[DURATION])}%"></div>
                 <Duration duration={item[col]/1000} />
               </td>
-
+            {:else if col == INFECTED}
+              <td class:infected={item[col] == true}>{item[col]}</td>
 
             {:else}
               <td>{item[col]}</td>
@@ -159,13 +174,24 @@ function applyFilter(data, minDuration, minTime) {
   }
   .table {
     position: relative;
+    border-spacing: 1px .6rem;
   }
-  .filters {
+  .person {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
-    height: 10rem;
+    height: 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: .5rem 2rem;
+  }
+  .filters {
+    position: absolute;
+    left: 0;
+    top: 2rem;
+    right: 0;
+    height: 8rem;
     display: flex;
     justify-content: space-between;
     padding: .5rem;
@@ -181,11 +207,19 @@ function applyFilter(data, minDuration, minTime) {
   .filters > div.active {
     box-shadow: 10px 10px 10px 0 rgba(0,0,0,.1);
   }
+  .status {
+    padding: .2rem 1rem;
+    display: inline-block;
 
+  }
+  .infected {
+    background: #F00;
+    color: #FFF;
+  }
   .actions {
   }
   .timeline-indicator {
-    margin-top: -.5rem;
+    margin-top: -1rem;
     position: absolute;
     height: .3rem;
     min-width: 1%;

@@ -3,4 +3,4 @@ cd src/btwa_frontend \
     && npm run build \
     && cd ../..
 
-pip install .
+pip install -e .

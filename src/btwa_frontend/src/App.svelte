@@ -1,8 +1,19 @@
 <script>
-import { contacts, phones } from './store.js';
+import { phones, error, getUser } from './store.js';
 
 import Dropzone from './Dropzone.svelte';
 import Contacts from './Contacts.svelte';
+
+let searchDialog = true;
+let searchNumber = '';
+
+function search() {
+  if (searchNumber != '') getUser(searchNumber)
+    .then(data => {
+      searchDialog = false;
+    });
+}
+
 
 </script>
 
@@ -13,21 +24,28 @@ import Contacts from './Contacts.svelte';
       <use xlink:href="res/icons.svg#logo" />
     </svg>
     <h1>EpiTrace</h1>
-    <label class="button" for="uploadfile">Load file</label>
+    <label class="button" on:click={() => searchDialog = true}>Search number</label>
+    <!--label class="button" for="uploadfile">Load file</label-->
   </header>
 
   <main>
-    {#if $contacts}
-     <Contacts data={$phones || $contacts} />
-    {:else}
-      <aside class="upload">
-
-        <h2>Drop file to upload</h2>
-        <p>or use the dialog</p>
-        <label class="button" for="uploadfile">Load file</label>
-      </aside>
+    {#if $phones}
+     <Contacts data={$phones} />
     {/if}
   </main>
+
+  {#if searchDialog}
+    <div class="overlay">
+      <aside class="modal">
+        <h2>Search user</h2>
+        {#if $error}
+        <div class="error">{$error}</div>
+        {/if}
+        <input class="search" type="text" bind:value={searchNumber} placeholder="Phone number" /><br/>
+        <button class="button" on:click="{search}">Search</button>
+      </aside>
+    </div>
+  {/if}
 
 </Dropzone>
 
@@ -41,7 +59,7 @@ header {
   height: var(--ui-header-height);
   display: flex;
   align-items: center;
-  padding: .5rem;
+  padding: .5rem 2rem;
   background: var(--ui-header-background);
   color: var(--ui-header-color);
 }
@@ -67,6 +85,22 @@ main {
   top: var(--ui-header-height);
   bottom: 0;
   right: 0;
+  background-image: linear-gradient(var(--theme-background-light), var(--theme-background-dark));
+  color: var(--theme-color);
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  box-shadow: 0px -10px 40px 0 rgba(0,0,0,.4);
+}
+
+.overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background-color: rgba(255,255,255,.8);
+
 }
 aside {
   position: fixed;
@@ -77,13 +111,27 @@ aside {
   color: var(--theme-highlight-color);
   border-radius: 2rem;
 }
-.upload {
+.modal {
   padding: 4rem 2rem;
   text-align: center;
   min-width: 50%;
 }
-.upload > * {
+.modal > * {
   margin: 1rem 0;
+}
+.error {
+  background: #F00;
+  color: #FFF;
+  border-radius: 2rem;
+  padding: .5rem 1rem;
+}
+
+.search {
+  background: #FFF;
+  border-radius: 2rem;
+  border: 0;
+  padding: .5rem 1rem;
+  width: 25vw;
 }
 
 </style>
