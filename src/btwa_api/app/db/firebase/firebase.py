@@ -54,6 +54,8 @@ class Firebase:
 
     def get_proximity(self, fuid: str):
         proximity = get_user_proximity(self.bucket, fuid)
+        if not proximity:
+            return None
         buids = list(set(record["buid"] for record in proximity))
         nearby_users = {user["buid"]: user for user in get_users_batched(self.users, buids)}
         for record in proximity:
