@@ -19,6 +19,8 @@ secretVolumes:
 
 env:
   GOOGLE_APPLICATION_CREDENTIALS: /etc/secrets/btwa-gapps/covid19cz-firebase-adminsdk-296p6-5813bb4cbe.json
+  FIREBASE_DB_URL: https://covid19cz.firebaseio.com/
+  FIREBASE_STORAGE_BUCKET: covid19cz.appspot.com
 
 imagePullSecrets: []
 nameOverride: ""
