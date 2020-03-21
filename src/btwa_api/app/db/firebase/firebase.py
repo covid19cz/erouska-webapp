@@ -38,7 +38,7 @@ def get_most_recent_proximity(bucket, fuid: str):
         return sorted(reader, key=lambda record: record.get("timestampStart", 0))
     except csv.Error:
         logger.warning(f"Error during CSV parsing: {traceback.format_exc()}")
-        return []
+        return None
 
 
 class Firebase:
