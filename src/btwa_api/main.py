@@ -41,8 +41,10 @@ async def monitoring_middleware(request: Request, call_next):
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
     request.state.db = Session()
-    response = await call_next(request)
-    request.state.db.close()
+    try:
+        response = await call_next(request)
+    finally:
+        request.state.db.close()
     return response
 
 
