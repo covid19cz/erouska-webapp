@@ -1,4 +1,5 @@
 import csv
+import traceback
 from io import StringIO
 from threading import RLock
 
@@ -6,16 +7,16 @@ import firebase_admin
 from firebase_admin import firestore, storage
 from starlette.requests import Request
 
-from ...config import FIREBASE_STORAGE_BUCKET
+from ...config import FIREBASE_STORAGE_BUCKET, logger
 
 MAX_IN_QUERY_LENGTH = 10
 ALLOWED_USER_STATUSES = {"unknown", "infected", "cured"}
 
 
-def get_users_batched(collection, ids):
+def get_users_batched(collection, buids):
     users = []
-    for start in range(0, len(ids), MAX_IN_QUERY_LENGTH):
-        subset = ids[start:start + MAX_IN_QUERY_LENGTH]
+    for start in range(0, len(buids), MAX_IN_QUERY_LENGTH):
+        subset = buids[start:start + MAX_IN_QUERY_LENGTH]
         users.extend(d.to_dict() for d in collection.where("buid", "in", subset).get())
     return users
 
@@ -31,8 +32,13 @@ def get_most_recent_proximity(bucket, fuid: str):
         return None
     most_recent = files[0]
     content = most_recent.download_as_string()
-    reader = csv.DictReader(StringIO(content.decode()))
-    return sorted(reader, key=lambda record: record["timestampStart"])
+
+    try:
+        reader = csv.DictReader(StringIO(content.decode()))
+        return sorted(reader, key=lambda record: record.get("timestampStart", 0))
+    except csv.Error:
+        logger.warning(f"Error during CSV parsing: {traceback.format_exc()}")
+        return []
 
 
 class Firebase:
@@ -56,11 +62,17 @@ class Firebase:
         proximity = get_most_recent_proximity(self.bucket, fuid)
         if not proximity:
             return []
-        buids = list(set(record["buid"] for record in proximity))
-        nearby_users = {user["buid"]: user for user in get_users_batched(self.users, buids)}
+        buids = list(set(record["buid"] for record in proximity if "buid" in record))
+        nearby_users = {user["buid"]: user for user in get_users_batched(self.users, buids) if
+                        user is not None}
+
+        valid_records = []
         for record in proximity:
-            record["user"] = nearby_users[record["buid"]]
-        return proximity
+            buid = record.get("buid")
+            if buid and buid in nearby_users:
+                record["user"] = nearby_users[buid]
+                valid_records.append(record)
+        return valid_records
 
     def change_user_status(self, fuid: str, status: str):
         assert status in ALLOWED_USER_STATUSES
