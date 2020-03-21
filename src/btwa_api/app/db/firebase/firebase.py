@@ -22,9 +22,9 @@ def get_users_batched(collection, ids):
 
 def get_user_proximity(bucket, fuid: str):
     files = sorted(bucket.list_blobs(prefix=f"proximity/{fuid}/",
-                                     fields="items(name)",
+                                     fields="items(name, timeCreated)",
                                      max_results=100),
-                   key=lambda b: b.name,
+                   key=lambda b: b.time_created,
                    reverse=True)
     files = [f for f in files if f.name.endswith(".csv")]
     if not files:
@@ -54,6 +54,8 @@ class Firebase:
 
     def get_proximity(self, fuid: str):
         proximity = get_user_proximity(self.bucket, fuid)
+        if not proximity:
+            return None
         buids = list(set(record["buid"] for record in proximity))
         nearby_users = {user["buid"]: user for user in get_users_batched(self.users, buids)}
         for record in proximity:
