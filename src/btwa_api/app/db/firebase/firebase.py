@@ -20,7 +20,7 @@ def get_users_batched(collection, ids):
     return users
 
 
-def get_user_proximity(bucket, fuid: str):
+def get_most_recent_proximity(bucket, fuid: str):
     files = sorted(bucket.list_blobs(prefix=f"proximity/{fuid}/",
                                      fields="items(name, timeCreated)",
                                      max_results=100),
@@ -52,10 +52,10 @@ class Firebase:
     def get_user_by_fuid(self, fuid: str):
         return self.users.document(fuid).get().to_dict()
 
-    def get_proximity(self, fuid: str):
-        proximity = get_user_proximity(self.bucket, fuid)
+    def get_proximity_records(self, fuid: str):
+        proximity = get_most_recent_proximity(self.bucket, fuid)
         if not proximity:
-            return None
+            return []
         buids = list(set(record["buid"] for record in proximity))
         nearby_users = {user["buid"]: user for user in get_users_batched(self.users, buids)}
         for record in proximity:

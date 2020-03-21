@@ -48,7 +48,7 @@ def get_proximity(fuid: str,
                   db: Database = Depends(get_db)):
     """Return information about proximity of the given user"""
     check_handler_auth(db, credentials)
-    records = get_or_404(firebase.get_proximity(fuid))
+    records = get_or_404(firebase.get_proximity_records(fuid))
     return [ProximityRecord(
         buid=r["buid"],
         start=r["timestampStart"],
