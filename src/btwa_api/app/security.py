@@ -1,4 +1,5 @@
 import bcrypt
+
 from fastapi import HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from starlette import status
@@ -12,7 +13,7 @@ def check_password(user_password: str, db_password: str):
     return bcrypt.checkpw(user_password.encode(), db_password)
 
 
-def check_handler_auth(db: Database, credentials: HTTPBasicCredentials):
+def check_user_authenticated(db: Database, credentials: HTTPBasicCredentials):
     db_password = db.get_handler_hashed_password(credentials.username)
     if db_password:
         if check_password(credentials.password, db_password):

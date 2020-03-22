@@ -1,5 +1,9 @@
 import pathlib
 
+from ..security import check_user_authenticated, security
+from ..db.utils import get_db
+from ..db.sql.database import Database
+
 import uvicorn
 from btwa_api.app.api.endpoints import router as trace_router
 from btwa_api.app.api.frontend import router as frontend_router
@@ -7,6 +11,8 @@ from btwa_api.app.api.healthcheck import router as healthcheck_router
 from btwa_api.app.config import sentry, statsd
 from btwa_api.app.db.sql.session import Session
 from fastapi import FastAPI
+from fastapi.security import HTTPBasicCredentials
+from fastapi import Depends
 from fastapi.staticfiles import StaticFiles
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.requests import Request
@@ -47,6 +53,12 @@ async def db_session_middleware(request: Request, call_next):
         request.state.db.close()
     return response
 
+
+@app.middleware("http")
+async def auth_handler(request: Request, call_next, 
+                       credentials: HTTPBasicCredentials = Depends(security), db: Database = Depends(get_db)):
+    check_user_authenticated(db, credentials)
+    return await call_next(request)
 
 app.add_middleware(SentryAsgiMiddleware)
 
