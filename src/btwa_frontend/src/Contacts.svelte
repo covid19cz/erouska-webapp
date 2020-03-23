@@ -31,11 +31,36 @@ let timeMin = 0;
 let timeMax = 0;
 let timeScale = null;
 let timeDuration = null;
+let groupByUser = false;
 
-$: d = applyFilter(data, durationFilter, timeFilter);
+$: d = applyFilter(data, durationFilter, timeFilter, groupByUser);
 
 // filter and calculate full ranges
-function applyFilter(data, minDuration, minTime) {
+function applyFilter(data, minDuration, minTime, groupByUser) {
+
+  // group data by user if required
+  data = (!groupByUser) ? data : Object.entries(data.reduce(function(t, d) {
+    // create a new user
+    if (!t[d.buid]) {
+      const u = {};
+      u.buid = d.buid;
+      u[PHONE_NUMBER] = d[PHONE_NUMBER];
+      u[INFECTED] = d[INFECTED];
+      u[ENCOUNTER_FROM] = d[ENCOUNTER_FROM];
+      u[ENCOUNTER_TO] = d[ENCOUNTER_TO];
+      u.times = [];
+      u[DURATION] = 0;
+
+      t[d.buid] = u;
+    }
+    // add duration;
+    t[d.buid][DURATION] += d[DURATION];
+    t[d.buid].times.push([ d[ENCOUNTER_FROM], d[ENCOUNTER_TO] ]);
+    t[d.buid][ENCOUNTER_FROM] = Math.min(t[d.buid][ENCOUNTER_FROM], d[ENCOUNTER_FROM]);
+    t[d.buid][ENCOUNTER_TO] = Math.max(t[d.buid][ENCOUNTER_TO], d[ENCOUNTER_TO]);
+
+    return t;
+  }, {})).map(entry => entry[1]).sort((a, b) => b[DURATION] - a[DURATION]);
 
   let filtered = data;
   let dMin = 0;
@@ -103,15 +128,23 @@ function applyFilter(data, minDuration, minTime) {
   <div class:active={timeFilter > timeMin} >
     <TimeFilter value={timeMin} min={timeMin} max={timeMax} on:change={e => timeFilter = e.detail} />
   </div>
+  <div>
+    <button on:click={() => groupByUser = !groupByUser} class="button">
+      {#if !groupByUser}Group by User{:else}Encounters timeline{/if}
+    </button>
+  </div>
 </div>
 
 <div class="scroll">
 {#if d && d.length > 0}
   <table class="table">
     <tr>
-      {#each Object.keys(d[0]) as col}
-        <th>{col.replace(/_/g, ' ')}</th>
-      {/each}
+      <th>ID</th>
+      <th>FROM</th>
+      <th>To</th>
+      <th>Duration</th>
+      <th>Infected</th>
+      <th>Phone</th>
     </tr>
 
     {#each d as item}
@@ -119,38 +152,38 @@ function applyFilter(data, minDuration, minTime) {
         on:mouseover={() => focusContact = item[ENCOUNTER_ID] }
         class:active={item[ENCOUNTER_ID] == focusContact}>
 
-        {#each Object.keys(item) as col}
+              <td>{item.buid}</td>
 
-            {#if col == PHONE_NUMBER}
-              <td class="actions">
-                <div class="timeline-indicator"
-                  style="left: {timeScale(new Date(item[ENCOUNTER_FROM]).valueOf())}%;
-                          width: {timeDuration(item[DURATION])}%"></div>
-                <a href="tel:{item[col]}" class="button">{item[col]}</a>
-              </td>
-
-            {:else if col == ENCOUNTER_FROM}
               <td>
-                {dayjs(item[col]).format('DD. MMM hh:mm:ss')}
+                {dayjs(item[ENCOUNTER_FROM]).format('DD. MMM hh:mm:ss')}
               </td>
 
-            {:else if col == ENCOUNTER_TO}
               <td>
-                {dayjs(item[col]).format('DD. MMM hh:mm:ss')}
+                {dayjs(item[ENCOUNTER_TO]).format('DD. MMM hh:mm:ss')}
               </td>
-            {:else if col == DURATION}
+
               <td class="duration">
                 <div class="duration-scale" style="width: {durationScale(item[DURATION])}%"></div>
-                <Duration duration={item[col]/1000} />
+                <Duration duration={item[DURATION]/1000} />
               </td>
-            {:else if col == INFECTED}
-              <td class:infected={item[col] == true}>{item[col]}</td>
 
-            {:else}
-              <td>{item[col]}</td>
-            {/if}
+              <td class:infected={item[INFECTED] == true}>{item[INFECTED]}</td>
 
-        {/each}
+              <td class="actions">
+                {#if item.times}
+                  {#each item.times as time}
+                    <div class="timeline-indicator"
+                      style="left: {timeScale(new Date(time[0]).valueOf())}%;
+                              width: {timeDuration(time[1] - time[0])}%"></div>
+                  {/each}
+                {:else}
+                  <div class="timeline-indicator"
+                    style="left: {timeScale(new Date(item[ENCOUNTER_FROM]).valueOf())}%;
+                            width: {timeDuration(item[DURATION])}%"></div>
+                {/if}
+                <a href="tel:{item[PHONE_NUMBER]}" class="button">{item[PHONE_NUMBER]}</a>
+              </td>
+
 
       </tr>
     {/each}
