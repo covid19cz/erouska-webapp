@@ -115,6 +115,7 @@ export function getUser (phone) {
         .then(data => {
           phones.set(data.map(d => {
             let c= {}
+            c.buid = d.buid;
             c[ENCOUNTER_FROM] = d.start;
             c[ENCOUNTER_TO]= d.end;
             c[DURATION] = d.end - d.start;
