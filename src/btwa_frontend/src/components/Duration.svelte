@@ -15,10 +15,10 @@ function secondsToHms(timestamp) {
   var m = Math.floor(timestamp % 3600 / 60);
   var s = Math.floor(timestamp % 3600 % 60);
 
-  if (d > 0) duration.d = d + (d == 1 ? ' day ' : ' days');
-  if (h > 0) duration.h = h + (h == 1 ? ' hour ' : ' hours');
-  if (m > 0 ) duration.m = m + (m == 1 ? ' minute ' : ' minutes');
-  if (s > 0) duration.s = s + (s == 1 ? ' second' : ' seconds');
+  if (d > 0) duration.d = d + (d == 1 ? ' den ' : ' dny');
+  if (h > 0) duration.h = h + (h == 1 ? ' hodina ' : ' hodiny');
+  if (m > 0 ) duration.m = m + (m == 1 ? ' minuta ' : ' minut');
+  if (s > 0) duration.s = s + (s == 1 ? ' vteřina' : ' vteřin');
 
   // map object to , separated string
   return Object.keys(duration).map(d => duration[d]).join(', ');
