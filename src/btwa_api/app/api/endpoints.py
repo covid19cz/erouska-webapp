@@ -30,7 +30,7 @@ def get_user(lookup: UserLookup,
     """Find user by his phone number."""
     check_handler_auth(db, credentials)
     user = get_or_404(firebase.get_user_by_phone(lookup.phone))
-    return User(fuid=user["fuid"], status=user["status"])
+    return User(fuid=user["fuid"], status="unknown")
 
 
 class ProximityRecord(BaseModel):
@@ -53,8 +53,8 @@ def get_proximity(fuid: str,
         buid=r["buid"],
         start=r["timestampStart"],
         end=r["timestampEnd"],
-        status=r["user"]["status"],
-        phone=r["user"]["phoneNumber"]
+        status="unknown",
+        phone=r["phoneNumber"]
     ) for r in records]
 
 
