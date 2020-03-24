@@ -15,8 +15,8 @@ function secondsToHms(timestamp) {
   var m = Math.floor(timestamp % 3600 / 60);
   var s = Math.floor(timestamp % 3600 % 60);
 
-  if (d > 0) duration.d = d + (d == 1 ? ' den ' : ' dny');
-  if (h > 0) duration.h = h + (h == 1 ? ' hodina ' : ' hodiny');
+  if (d > 0) duration.d = d + (d == 1 ? ' den ' : ' dnů');
+  if (h > 0) duration.h = h + (h == 1 ? ' hodina ' : ' hodin');
   if (m > 0 ) duration.m = m + (m == 1 ? ' minuta ' : ' minut');
   if (s > 0) duration.s = s + (s == 1 ? ' vteřina' : ' vteřin');
 
