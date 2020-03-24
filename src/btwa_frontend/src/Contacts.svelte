@@ -12,6 +12,7 @@ import { changeStatus, patient } from './store.js';
 
 import { scaleLinear } from 'd3';
 import dayjs from 'dayjs';
+import 'dayjs/locale/cs'
 
 import Duration from './components/Duration.svelte';
 import DurationFilter from './components/DurationFilter.svelte';
@@ -112,13 +113,7 @@ function applyFilter(data, minDuration, minTime, groupByUser) {
 </script>
 
 <div class="person">
-  Contact history for {$patient.phone}
-  <strong class="status {$patient.status}">{$patient.status}</strong>
-  {#if $patient.status == 'infected'}
-    <button class="button" on:click={() => changeStatus($patient.fuid, 'cured')}>Mark as Cured</button>
-  {:else}
-    <button class="button" on:click={() => changeStatus($patient.fuid, 'infected')}>Mark as Infected</button>
-  {/if}
+  Historie kontaktů čísla {$patient.phone}
 </div>
 
 <div class="filters">
@@ -130,7 +125,7 @@ function applyFilter(data, minDuration, minTime, groupByUser) {
   </div>
   <div>
     <button on:click={() => groupByUser = !groupByUser} class="button">
-      {#if !groupByUser}Group by User{:else}Encounters timeline{/if}
+      {#if !groupByUser}Seskupit podle uživatele{:else}Časová řada setkání{/if}
     </button>
   </div>
 </div>
@@ -139,35 +134,19 @@ function applyFilter(data, minDuration, minTime, groupByUser) {
 {#if d && d.length > 0}
   <table class="table">
     <tr>
+      <th>Telefonní číslo</th>
+      <th>Začátek</th>
+      <th>Délka</th>
+      <th>Poslední setkání</th>
+      <th>Minimální signál</th>
+      <th>Rizikový kontakt</th>
       <th>ID</th>
-      <th>FROM</th>
-      <th>To</th>
-      <th>Duration</th>
-      <th>Infected</th>
-      <th>Phone</th>
     </tr>
 
     {#each d as item}
       <tr
         on:mouseover={() => focusContact = item[ENCOUNTER_ID] }
         class:active={item[ENCOUNTER_ID] == focusContact}>
-
-              <td>{item.buid}</td>
-
-              <td>
-                {dayjs(item[ENCOUNTER_FROM]).format('DD. MMM hh:mm:ss')}
-              </td>
-
-              <td>
-                {dayjs(item[ENCOUNTER_TO]).format('DD. MMM hh:mm:ss')}
-              </td>
-
-              <td class="duration">
-                <div class="duration-scale" style="width: {durationScale(item[DURATION])}%"></div>
-                <Duration duration={item[DURATION]/1000} />
-              </td>
-
-              <td class:infected={item[INFECTED] == true}>{item[INFECTED]}</td>
 
               <td class="actions">
                 {#if item.times}
@@ -184,7 +163,22 @@ function applyFilter(data, minDuration, minTime, groupByUser) {
                 <a href="tel:{item[PHONE_NUMBER]}" class="button">{item[PHONE_NUMBER]}</a>
               </td>
 
+              <td>
+                {dayjs(item[ENCOUNTER_FROM]).locale('cs').format('DD. MMM hh:mm:ss')}
+              </td>
 
+              <td class="duration">
+                <div class="duration-scale" style="width: {durationScale(item[DURATION])}%"></div>
+                <Duration duration={item[DURATION]/1000} />
+              </td>
+
+              <td>
+                {dayjs(item[ENCOUNTER_TO]).locale('cs').format('DD. MMM hh:mm:ss')}
+              </td>
+
+              <td>-85</td>
+              <td class:infected={item[INFECTED] == true}>Ne</td>
+              <td>{item.buid}</td>
       </tr>
     {/each}
   </table>

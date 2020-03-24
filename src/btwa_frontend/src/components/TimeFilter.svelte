@@ -10,7 +10,7 @@ export let min = 0;
 
 </script>
 
-<label>Period:</label>
+<label>Časové okno:</label>
 
 <input type="range"
   min={min}
@@ -20,7 +20,7 @@ export let min = 0;
   style="--min: {min}; --max: {max}; --val: {value}"
   />
 <p>
-Last <Duration duration={(max - value)/1000} />
+Posledních <Duration duration={(max - value)/1000} />
 </p>
 
 <style>

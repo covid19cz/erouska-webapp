@@ -10,7 +10,7 @@ export let min = 0;
 
 </script>
 
-<label>Duration:</label>
+<label>Délka:</label>
 <input type="range"
   min={min}
   max={max-1}
@@ -19,7 +19,7 @@ export let min = 0;
   style="--min: 0; --max: {max}; --val: {value}"
   />
 <p>
-Minimal contact duration <Duration duration={value+1} />
+Minimální délka setkání <Duration duration={value+1} />
 </p>
 
 <style>

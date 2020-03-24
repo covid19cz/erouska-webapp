@@ -24,7 +24,7 @@ function search() {
       <use xlink:href="res/icons.svg#logo" />
     </svg>
     <h1>EpiTrace</h1>
-    <label class="button" on:click={() => searchDialog = true}>Search number</label>
+    <label class="button" on:click={() => searchDialog = true}>Vyhledat číslo</label>
     <!--label class="button" for="uploadfile">Load file</label-->
   </header>
 
@@ -37,12 +37,12 @@ function search() {
   {#if searchDialog}
     <div class="overlay">
       <aside class="modal">
-        <h2>Search user</h2>
+        <h2>Vyhledat uživatele</h2>
         {#if $error}
         <div class="error">{$error}</div>
         {/if}
         <input class="search" type="text" bind:value={searchNumber} placeholder="Phone number" /><br/>
-        <button class="button" on:click="{search}">Search</button>
+        <button class="button" on:click="{search}">Vyhledat</button>
       </aside>
     </div>
   {/if}
