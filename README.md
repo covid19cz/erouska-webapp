@@ -1,5 +1,5 @@
-# Mobilní rouška
-_(COVID-19 Bluetooth Tracking App) - Web Application_
+# eRrouška
+_Web Application_
 
 TBD
 
@@ -19,8 +19,8 @@ You can use `source install_local.sh` (bash) or `. install_local.fish` (Fish) pr
 Or, do it by your own:
 
 ```bash
-git checkout https://github.com/covid19cz/bt-tracing-webapp.git
-cd bt-tracing-webapp
+git checkout https://github.com/covid19cz/erouska-webapp.git
+cd erouska-webapp
 
 python3 -m venv env
 source env/bin/activate # . env/bin/activate.fish for fish
