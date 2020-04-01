@@ -1,6 +1,8 @@
+from io import BytesIO
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBasicCredentials
 from pydantic import BaseModel
 
@@ -58,17 +60,20 @@ def get_proximity(fuid: str,
     ) for r in records]
 
 
-class UserStatus(BaseModel):
-    status: str
-
-
-@router.post("/change-user-status/{fuid}")
-def change_user_status(fuid: str,
-                       status: UserStatus,
-                       credentials: HTTPBasicCredentials = Depends(security),
-                       firebase: Firebase = Depends(get_firebase),
-                       db: Database = Depends(get_db)):
-    """Change the infected status of a user"""
+@router.get("/get-csv/{phone}")
+def get_user(phone: str,
+             credentials: HTTPBasicCredentials = Depends(security),
+             firebase: Firebase = Depends(get_firebase),
+             db: Database = Depends(get_db)):
+    """Return CSV data for the given telephone number."""
     check_handler_auth(db, credentials)
-    if not firebase.change_user_status(fuid, status.status):
-        raise HTTPException(status_code=404)
+
+    content = get_or_404(firebase.get_user_data(phone))
+    buffer = content.getvalue()
+    length = len(buffer)
+    return StreamingResponse(BytesIO(buffer),
+                             media_type="application/zip",
+                             headers={
+                                 "Content-Disposition": f"attachment;filename={phone}.zip",
+                                 "Content-Length": str(length)
+                             })
