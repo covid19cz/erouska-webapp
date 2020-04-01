@@ -14,6 +14,11 @@ function search() {
     });
 }
 
+function download() {
+  if (searchNumber != '') {
+    window.location.href= "/get-csv/" + searchNumber;
+  }
+}
 
 </script>
 
@@ -42,7 +47,7 @@ function search() {
         <div class="error">{$error}</div>
         {/if}
         <input class="search" type="text" bind:value={searchNumber} placeholder="Telefonní číslo" /><br/>
-        <button class="button" on:click="{search}">Vyhledat</button>
+        <button class="button" on:click="{download}">Vyhledat</button>
       </aside>
     </div>
   {/if}
