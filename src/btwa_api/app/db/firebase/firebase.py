@@ -1,5 +1,8 @@
 import csv
+import io
+import re
 import traceback
+import zipfile
 from io import StringIO
 from threading import RLock
 from typing import List
@@ -85,16 +88,29 @@ class Firebase:
                 valid_records.append(record)
         return valid_records
 
-    def change_user_status(self, fuid: str, status: str):
-        assert status in ALLOWED_USER_STATUSES
+    def get_user_data(self, phone):
+        user = self.get_user_by_phone(phone)
+        if not user:
+            return None
+        fuid = user["fuid"]
+        files = self.bucket.list_blobs(prefix=f"proximity/{fuid}/", max_results=100)
+        files = [f for f in files if f.name.endswith(".csv")]
 
-        doc = self.users.document(fuid)
-        if not doc.get().exists:
-            return False
-        doc.update({
-            "status": status
-        })
-        return True
+        bytes = io.BytesIO()
+        with zipfile.ZipFile(bytes, "w", compression=zipfile.ZIP_DEFLATED) as zip:
+            for file in files:
+                match = CSV_REGEX.match(file.name)
+                if not match:
+                    continue
+                buid = match.group(1)
+                timestamp = match.group(2)
+                filename = f"{buid}-{timestamp}.csv"
+                content = file.download_as_string().decode()
+                zip.writestr(filename, content)
+        return bytes
+
+
+CSV_REGEX = re.compile(r"^proximity/.*/(.*)/(\d+)\.csv$")
 
 
 FIREBASE_INSTANCE = None
