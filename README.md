@@ -1,7 +1,10 @@
+|:warning: This app has been discontinued and serves only for some debugging purposes now. The repository will probably be archived soon! |
+| --- |
+
 # eRrouška
 _Web Application_
 
-TBD
+** DISCONTINUED **
 
 ## Installation for developer
 
