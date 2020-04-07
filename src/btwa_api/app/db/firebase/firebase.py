@@ -8,7 +8,7 @@ from threading import RLock
 from typing import List
 
 import firebase_admin
-from firebase_admin import firestore, storage
+from firebase_admin import firestore, storage, auth
 from google.cloud.firestore_v1 import CollectionReference
 from starlette.requests import Request
 
@@ -63,11 +63,12 @@ class Firebase:
         self.registrations = self.client.collection("registrations")
 
     def get_user_by_phone(self, phone: str):
-        for doc in self.users.where("phoneNumber", "==", phone).stream():
-            document = doc.to_dict()
-            document["fuid"] = doc.id
+        user = auth.get_user_by_phone_number(phone)
+        if user:
+            document = {"fuid": user.uid}
             return document
-        return None
+        else:
+            return None
 
     def get_user_by_fuid(self, fuid: str):
         return self.users.document(fuid).get().to_dict()
@@ -93,6 +94,7 @@ class Firebase:
         if not user:
             return None
         fuid = user["fuid"]
+        logger.info(fuid)
         files = self.bucket.list_blobs(prefix=f"proximity/{fuid}/", max_results=100)
         files = [f for f in files if f.name.endswith(".csv")]
 
@@ -111,7 +113,6 @@ class Firebase:
 
 
 CSV_REGEX = re.compile(r"^proximity/.*/(.*)/(\d+)\.csv$")
-
 
 FIREBASE_INSTANCE = None
 FIREBASE_LOCK = RLock()
