@@ -63,11 +63,14 @@ class Firebase:
         self.registrations = self.client.collection("registrations")
 
     def get_user_by_phone(self, phone: str):
+        logger.info(f"Searching for phone {phone}")
         user = auth.get_user_by_phone_number(phone)
         if user:
+            logger.info(f"User with phone {phone} not found")
             document = {"fuid": user.uid}
             return document
         else:
+            logger.info(f"User with phone {phone} found")
             return None
 
     def get_user_by_fuid(self, fuid: str):
@@ -94,7 +97,7 @@ class Firebase:
         if not user:
             return None
         fuid = user["fuid"]
-        logger.info(fuid)
+        logger.info(f"Getting data for FUID {fuid}")
         files = self.bucket.list_blobs(prefix=f"proximity/{fuid}/", max_results=100)
         files = [f for f in files if f.name.endswith(".csv")]
 
